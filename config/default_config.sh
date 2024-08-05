@@ -55,9 +55,6 @@ PLAYERS=6
 # This is an advanced feature that most people will not need to use.
 BIND_IP="127.0.0.1"
 
-# Whether to interpret input in stdin as console commands.
-CONSOLE=true
-
 ################## CONFIGURATION #################
 
 VALIDATE=true;

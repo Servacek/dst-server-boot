@@ -2,6 +2,8 @@
 
 DEFAULT_CONFIG_FILE="config/default_config.sh"
 CONFIG_FILE="config/config.sh"
+SCREEN_CONFIG_FILE="config/screen_config.sh"
+
 UPDATE_LOG_FILE="update.log"
 
 echo "Loading configuration..."
@@ -20,10 +22,11 @@ source "$CONFIG_FILE"
 ###########################################
 
 # Make sure no other session created by this script are currently running
-for SESSIONS in ${SCREEN_SESSIONS[@]}; do
-    SESSION="${CLUSTER}_${SESSIONS}"
-    if screen -ls | grep -q "$SESSION"; then
+for SESSION_TYPE in ${SCREEN_SESSIONS[@]}; do
+    SESSION="${CLUSTER}_${SESSION_TYPE}"
+    if screen -ls | grep -q "\.${SESSION}[[:space:]]" then
         echo "Cannot start the server screen sessions because the session \"${SESSION}\" already exists."
+        exit 1
     fi
 done
 
@@ -36,14 +39,14 @@ fi
 # Start up the updating process but do not fork, we want to wait until it finishes.
 echo "Starting the server update process..."
 taskset -c ${MAIN_CPUCORE} \
-    screen -m -U -D -S ${CLUSTER}_Update \
+    screen -c ${SCREEN_CONFIG_FILE} -m -U -D -S ${CLUSTER}_Update \
         bash -c "${STEAMCMD} \
             +force_install_dir ${GAMEDIR} \
             +login ${LOGIN} \
             +app_update ${GAMEID} \
             $(if [[ $VALIDATE == true ]]; then echo "validate"; fi) \
             +quit 2>&1 \
-        | tee -a ${UPDATE_LOG_FILE} | tee echo" # Log output to console as well.
+        | tee -a ${UPDATE_LOG_FILE}"
 
 if [ -f "$MODS_SETUP_FILE_BACKUP_PATH" ]; then
     echo "Restoring the mods setup file..."
@@ -67,7 +70,7 @@ for INDEX in ${!SHARDS[@]}; do
 
     echo "Starting ${SHARD_NAME}..."
     taskset -c $(if [[ -n "$CPU_CORE" ]]; then echo "$CPU_CORE"; else echo "0-$(($(nproc)-1))"; fi) \
-        screen -m -U -t "$SHARD_NAME" -S "${CLUSTER}_${SHARD_NAME}" "$DST_BIN" \
+        screen -c ${SCREEN_CONFIG_FILE} -m -d -U -t "$SHARD_NAME" -S "${CLUSTER}_${SHARD_NAME}" "$DST_BIN" \
             -persistent_storage_root "$PERSISTENT_STORAGE_ROOT" \
             -conf_dir "$CONF_DIR" \
             -cluster "$CLUSTER" \
@@ -78,7 +81,6 @@ for INDEX in ${!SHARDS[@]}; do
             -bind_ip "$BIND_IP" \
             -tick "$TICK" \
             $(if [[ "$PORT" != "" ]]; then echo "-port ${PORT}"; fi) \
-            $(if [[ "$CONSOLE" == true ]]; then echo "-console"; fi)
 
     if [[ $? -ne 0 ]]; then
         echo "Failed to start ${SHARD_NAME}! Status: $?"
