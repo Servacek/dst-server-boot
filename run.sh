@@ -1,7 +1,7 @@
 #!/bin/bash
 
-DEFAULT_CONFIG_FILE="default_config.sh"
-CONFIG_FILE="config.sh"
+DEFAULT_CONFIG_FILE="config/default_config.sh"
+CONFIG_FILE="config/config.sh"
 UPDATE_LOG_FILE="update.log"
 
 echo "Loading configuration..."
