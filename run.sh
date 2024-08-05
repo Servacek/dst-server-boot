@@ -5,24 +5,24 @@ CONFIG_FILE="config/config.sh"
 UPDATE_LOG_FILE="update.log"
 
 echo "Loading configuration..."
-if [ -f DEFAULT_CONFIG_FILE ]; then
-    if [ ! -f CONFIG_FILE ]; then
-        cp DEFAULT_CONFIG_FILE CONFIG_FILE
+if [ -f $DEFAULT_CONFIG_FILE ]; then
+    if [ ! -f $CONFIG_FILE ]; then
+        cp $DEFAULT_CONFIG_FILE $CONFIG_FILE
     fi
 else
     echo "Configuration failed to load: ${DEFAULT_CONFIG_FILE} not found. Try to redownload the script."
     exit 1
 fi
 
-source default_config.sh # For compatibility with newer configurations not yet configured locally.
-source config.sh
+source $DEFAULT_CONFIG_FILE # For compatibility with newer configurations not yet configured locally.
+source $CONFIG_FILE
 
 ###########################################
 
 # Make sure no other session created by this script are currently running
 for SESSIONS in ${SCREEN_SESSIONS[@]}; do
     SESSION="${CLUSTER}_${SESSIONS}"
-    if screen -ls | grep -q "${SESSION}"; then
+    if screen -ls | grep -q $SESSION; then
         echo "Cannot start the server screen sessions because the session \"${SESSION}\" already exists."
     fi
 done
@@ -41,7 +41,7 @@ taskset -c ${MAIN_CPUCORE} \
             +force_install_dir ${GAMEDIR} \
             +login ${LOGIN} \
             +app_update ${GAMEID} \
-            $(if [[ $VALIDATE == true ]]; then "validate"; else ""; fi) \
+            $(if [[ $VALIDATE == true ]]; then echo "validate"; fi) \
             +quit 2>&1 \
         | tee ${UPDATE_LOG_FILE} | tee /dev/tty" # Log output to console as well.
 
@@ -66,19 +66,19 @@ for INDEX in ${!SHARDS[@]}; do
     PORT=${PORTS[$INDEX]}
 
     echo "Starting ${SHARD_NAME}..."
-    taskset -c $(if [[ -n $CPU_CORE ]]; then echo "${CPU_CORE}"; else echo "0-$(($(nproc)-1))"; fi) \
-        screen -m -U -t "${SHARD_NAME}" -S "${CLUSTER}_${SHARD_NAME}" "$DST_BIN" \
-            -persistent_storage_root "$PERSISTENT_STORAGE_ROOT" \
-            -conf_dir "$CONF_DIR" \
-            -cluster "$CLUSTER" \
-            -shard "$SHARD_NAME" \
-            -backup_log_count "$BACKUP_LOG_COUNT" \
-            -only_update_server_mods "$ONLY_UPDATE_SERVER_MODS" \
-            -skip_update_server_mods "$SKIP_UPDATE_SERVER_MODS" \
-            -bind_ip "$BIND_IP" \
-            -tick "$TICK" \
-            $(if [[ $PORT != "" ]]; then "-port $PORT"; else ""; fi) \
-            $(if [[ $CONSOLE == true ]]; then "-console"; else ""; fi)
+    taskset -c $(if [[ -n $CPU_CORE ]]; then echo $CPU_CORE; else echo "0-$(($(nproc)-1))"; fi) \
+        screen -m -U -t $SHARD_NAME -S "${CLUSTER}_${SHARD_NAME}" $DST_BIN \
+            -persistent_storage_root $PERSISTENT_STORAGE_ROOT \
+            -conf_dir $CONF_DIR \
+            -cluster $CLUSTER \
+            -shard $SHARD_NAME \
+            -backup_log_count $BACKUP_LOG_COUNT \
+            -only_update_server_mods $ONLY_UPDATE_SERVER_MODS \
+            -skip_update_server_mods $SKIP_UPDATE_SERVER_MODS \
+            -bind_ip $BIND_IP \
+            -tick $TICK \
+            $(if [[ $PORT != "" ]]; then echo "-port ${PORT}"; fi) \
+            $(if [[ $CONSOLE == true ]]; then echo "-console"; fi)
 
     if [[ $? -ne 0 ]]; then
         echo "Failed to start ${SHARD_NAME}! Status: $?"
