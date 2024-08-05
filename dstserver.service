@@ -1,0 +1,13 @@
+[Unit]
+Description=Don't Starve Together Dedicated Server
+StandardOutput=journal+console
+StandardError=journal+console
+After=network.target
+Type=simple
+Restart=on-failure
+RestartSec=30
+User=<NAME OF THE OWNER OF THIS SERVICE>
+ExecStart=<PATH TO YOUR run.sh FILE>
+
+[Install]
+WantedBy=multi-user.target
