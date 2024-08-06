@@ -24,7 +24,7 @@ source "$CONFIG_FILE"
 # Make sure no other session created by this script are currently running
 for SESSION_TYPE in ${SCREEN_SESSIONS[@]}; do
     SESSION="${CLUSTER}_${SESSION_TYPE}"
-    if [ screen -ls | grep -q "\.${SESSION}[[:space:]]" ] then
+    if screen -ls | grep -q "\.${SESSION}[[:space:]]"; then
         echo "Cannot start the server screen sessions because the session \"${SESSION}\" already exists."
         exit 1
     fi
