@@ -86,7 +86,7 @@ for INDEX in ${!SHARDS[@]}; do
             -tick "$TICK" \
             $(if [[ "$PORT" != "" ]]; then echo "-port ${PORT}"; fi) \
 
-    if [[ $? -ne 0 || !screen_exists "${SESSION}" ]]; then
+    if [[ $? -ne 0 || ! screen_exists "${SESSION}" ]]; then
         echo "Failed to start ${SHARD_NAME}! Status: $?"
     else
         echo "Started ${SHARD_NAME}!"
