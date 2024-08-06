@@ -21,10 +21,16 @@ source "$CONFIG_FILE"
 
 ###########################################
 
+screen_exists() {
+    screen -ls | grep "\b${1}[[:space:]]("
+}
+
+###########################################
+
 # Make sure no other session created by this script are currently running
 for SESSION_TYPE in ${SCREEN_SESSIONS[@]}; do
     SESSION="${CLUSTER}_${SESSION_TYPE}"
-    if screen -ls | grep -q "\.${SESSION}[[:space:]]"; then
+    if screen_exists "$SESSION"; then
         echo "Cannot start the server screen sessions because the session \"${SESSION}\" already exists."
         exit 1
     fi
@@ -60,6 +66,7 @@ fi
 echo "Starting up the shards..."
 for INDEX in ${!SHARDS[@]}; do
     SHARD_NAME=${SHARDS[$INDEX]} # Should always have an value, since names are required.
+    SESSION=${CLUSTER}_${SHARDS[$INDEX]}
 
     # Optional
     CPU_CORE=${CPUCORES[$INDEX]}
@@ -67,7 +74,7 @@ for INDEX in ${!SHARDS[@]}; do
 
     echo "Starting ${SHARD_NAME}..."
     taskset -c $(if [[ -n "$CPU_CORE" ]]; then echo "$CPU_CORE"; else echo "0-$(($(nproc)-1))"; fi) \
-        screen -c ${SCREEN_CONFIG_FILE} -m -d -U -t "$SHARD_NAME" -S "${CLUSTER}_${SHARD_NAME}" "$DST_BIN" \
+        screen -c ${SCREEN_CONFIG_FILE} -m -d -U -t "$SHARD_NAME" -S "${SESSION}" "$DST_BIN" \
             -persistent_storage_root "$PERSISTENT_STORAGE_ROOT" \
             -conf_dir "$CONF_DIR" \
             -cluster "$CLUSTER" \
@@ -79,11 +86,7 @@ for INDEX in ${!SHARDS[@]}; do
             -tick "$TICK" \
             $(if [[ "$PORT" != "" ]]; then echo "-port ${PORT}"; fi) \
 
-    if ps -p $! > /dev/null; then
-        echo "$! is running"
-    fi
-
-    if [[ $? -ne 0 ]]; then
+    if [[ $? -ne 0 || !screen_exists "${SESSION}" ]]; then
         echo "Failed to start ${SHARD_NAME}! Status: $?"
     else
         echo "Started ${SHARD_NAME}!"
