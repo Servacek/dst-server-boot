@@ -38,22 +38,21 @@ fi
 
 # Start up the updating process but do not fork, we want to wait until it finishes.
 echo "Starting the server update process..."
-taskset -c ${MAIN_CPUCORE} \
-    screen -c ${SCREEN_CONFIG_FILE} -m -U -D -S ${CLUSTER}_Update \
-        bash -c "${STEAMCMD} \
-            +force_install_dir ${GAMEDIR} \
-            +login ${LOGIN} \
-            +app_update ${GAMEID} \
-            $(if [[ $VALIDATE == true ]]; then echo "validate"; fi) \
-            +quit 2>&1 \
-        | tee -a ${UPDATE_LOG_FILE}"
+screen -c ${SCREEN_CONFIG_FILE} -m -U -D -S ${CLUSTER}_Update \
+    bash -c "${STEAMCMD} \
+        +force_install_dir ${GAMEDIR} \
+        +login ${LOGIN} \
+        +app_update ${GAMEID} \
+        $(if [[ $VALIDATE == true ]]; then echo "validate"; fi) \
+        +quit 2>&1 \
+    | tee -a ${UPDATE_LOG_FILE}; echo \$? > /tmp/steamcmd_update.status"
 
 if [ -f "$MODS_SETUP_FILE_BACKUP_PATH" ]; then
     echo "Restoring the mods setup file..."
     mv "$MODS_SETUP_FILE_BACKUP_PATH" "$MODS_SETUP_FILE_PATH"
 fi
 
-if [[ $? -ne 0 ]]; then
+if [[ $? -ne 0 || $(cat /tmp/steamcmd_update.status) -ne 0 ]]; then
     echo "Updating server proccess failed! Status: $?"
     exit 1
 else
