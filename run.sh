@@ -2,7 +2,7 @@
 
 DEFAULT_CONFIG_FILE="config/default_config.sh"
 CONFIG_FILE="config/config.sh"
-SCREEN_CONFIG_FILE="config/screen_config.sh"
+SCREEN_CONFIG_FILE="config/screen.conf"
 
 UPDATE_LOG_FILE="update.log"
 
@@ -36,23 +36,21 @@ if [[ $VALIDATE == true ]]; then
     mv "$MODS_SETUP_FILE_PATH" "$MODS_SETUP_FILE_BACKUP_PATH"
 fi
 
-# Start up the updating process but do not fork, we want to wait until it finishes.
 echo "Starting the server update process..."
-screen -c ${SCREEN_CONFIG_FILE} -m -U -D -S ${CLUSTER}_Update \
-    bash -c "${STEAMCMD} \
-        +force_install_dir ${GAMEDIR} \
-        +login ${LOGIN} \
-        +app_update ${GAMEID} \
-        $(if [[ $VALIDATE == true ]]; then echo "validate"; fi) \
-        +quit 2>&1 \
-    | tee -a ${UPDATE_LOG_FILE}; echo \$? > /tmp/steamcmd_update.status"
+# Wait until the process finishes and also print out the output to the console.
+bash -c "${STEAMCMD} \
+    +force_install_dir ${GAMEDIR} \
+    +login ${LOGIN} \
+    +app_update ${GAMEID} \
+    $(if [[ $VALIDATE == true ]]; then echo "validate"; fi) \
+    +quit"
 
 if [ -f "$MODS_SETUP_FILE_BACKUP_PATH" ]; then
     echo "Restoring the mods setup file..."
     mv "$MODS_SETUP_FILE_BACKUP_PATH" "$MODS_SETUP_FILE_PATH"
 fi
 
-if [[ $? -ne 0 || $(cat /tmp/steamcmd_update.status) -ne 0 ]]; then
+if [[ $? -ne 0 ]]; then
     echo "Updating server proccess failed! Status: $?"
     exit 1
 else
@@ -80,6 +78,10 @@ for INDEX in ${!SHARDS[@]}; do
             -bind_ip "$BIND_IP" \
             -tick "$TICK" \
             $(if [[ "$PORT" != "" ]]; then echo "-port ${PORT}"; fi) \
+
+    if ps -p $! > /dev/null; then
+        echo "$! is running"
+    fi
 
     if [[ $? -ne 0 ]]; then
         echo "Failed to start ${SHARD_NAME}! Status: $?"
