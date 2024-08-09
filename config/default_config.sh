@@ -92,8 +92,4 @@ PORTS=()
 # This is used by the server updating process as well before the server itself starts.
 MAIN_CPUCORE=${CPUCORES[0]}
 
-################## SESSIONS #################
-
-SCREEN_SESSIONS=({$SHARDS[@]} + "Update")
-
 #############################################

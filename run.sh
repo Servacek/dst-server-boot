@@ -28,15 +28,15 @@ screen_exists() {
 ###########################################
 
 # Make sure no other session created by this script are currently running
-for SESSION_TYPE in ${SCREEN_SESSIONS[@]}; do
-    SESSION="${CLUSTER}_${SESSION_TYPE}"
+for SHARD in ${SHARDS[@]}; do
+    SESSION="${CLUSTER}_${SHARD}"
     if screen_exists "$SESSION"; then
-        echo "Cannot start the server screen sessions because the session \"${SESSION}\" already exists."
+        echo "Cannot start the server screen sessions because the session \"${SESSION}\" already exists.\nClose all already running sessions and try again.s"
         exit 1
     fi
 done
 
-if [[ $VALIDATE == true ]]; then
+if [[ $VALIDATE == true && -f "$MODS_SETUP_FILE_PATH" ]]; then
     # Backup the mods setup file since it's being overridden by validation.
     echo "Backing up the mods setup file..."
     mv "$MODS_SETUP_FILE_PATH" "$MODS_SETUP_FILE_BACKUP_PATH"
@@ -86,9 +86,9 @@ for INDEX in ${!SHARDS[@]}; do
             -tick "$TICK" \
             $(if [[ "$PORT" != "" ]]; then echo "-port ${PORT}"; fi) \
 
-    if [[ $? -ne 0 || ! screen_exists "${SESSION}" ]]; then
-        echo "Failed to start ${SHARD_NAME}! Status: $?"
-    else
+    if screen_exists "$SESSION"; then
         echo "Started ${SHARD_NAME}!"
+    else
+        echo "Failed to start ${SHARD_NAME}! Status: $?"
     fi
 done
