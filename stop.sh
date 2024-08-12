@@ -1,3 +1,3 @@
 #!/bin/bash
 
-source constants.sh
+. constants.sh

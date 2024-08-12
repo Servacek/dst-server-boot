@@ -1,13 +1,29 @@
 [Unit]
 Description=Don't Starve Together Dedicated Server
-StandardOutput=journal+console
-StandardError=journal+console
+Requires=network-online.target
+After=network-online.target
+
+[Service]
 After=network.target
-Type=simple
-Restart=on-failure
-RestartSec=30
+Type=forking
+# Specifies when the manager should consider the service to be finished.
+# One of main or cgroup:
+ExitType=cgroup
+# Takes a boolean value that specifies whether the service shall
+# be considered active even when all its processes exited. Defaults to no.
+RemainAfterExit=no
+GuessMainPID=no
+# Since we do not have a MAIN process, this is actually irelevant.
+Restart=never
+# The user the screen sessions will run under.
 User=<NAME OF THE OWNER OF THIS SERVICE>
-ExecStart=<PATH TO YOUR run.sh FILE>
+# Group=steam
+# This has to be set in order for proper reading of configuration files
+# with relative paths inside the run script.
+WorkingDirectory=<PATH TO YOUR BOOT FOLDER>
+ExecStart=start.sh
+ExecReload=reload.sh
+ExecStop=stop.sh
 
 [Install]
 WantedBy=multi-user.target

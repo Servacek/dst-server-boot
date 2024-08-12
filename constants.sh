@@ -18,8 +18,8 @@ else
     exit 1
 fi
 
-source "$DEFAULT_CONFIG_FILE" # For compatibility with newer configurations not yet configured locally.
-source "$CONFIG_FILE"
+. "$DEFAULT_CONFIG_FILE" # For compatibility with newer configurations not yet configured locally.
+. "$CONFIG_FILE"
 
 CONFIG_PATH="${PERSISTENT_STORAGE_ROOT}/${CONF_DIR}"
 CLUSTER_PATH="${CONFIG_PATH}/${CLUSTER_NAME}";
