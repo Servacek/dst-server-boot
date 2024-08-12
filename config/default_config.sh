@@ -74,6 +74,8 @@ IGNORE_UPDATEM_FAILURE=false;
 SHARD_SESSION_PREFIX="${CLUSTER}_"
 SESSION_OWNER="steam"
 
+SERVICE="dstserver"
+
 ################## SHARDS #################
 
 # Folder names for the individual shards this server has.

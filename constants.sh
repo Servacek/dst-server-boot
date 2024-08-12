@@ -10,7 +10,7 @@ UPDATE_LOG_FILE="update.log"
 
 echo "Loading configuration..."
 if [ -f "$DEFAULT_CONFIG_FILE" ]; then
-    if [ ! -f $CONFIG_FILE ]; then
+    if [ ! -f "$CONFIG_FILE" ]; then
         cp "$DEFAULT_CONFIG_FILE" "$CONFIG_FILE"
     fi
 else
