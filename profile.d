@@ -8,7 +8,7 @@ GROUP_NAME="czsk-admin"
 # A wrapper around the built-in "alias" command.
 add_alias() {
     alias ${1}="${2}"
-    echo "   - ${1}     -> ${3}"
+    echo "   - ${1}         -> ${3}"
 }
 
 exit() {
