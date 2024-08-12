@@ -10,6 +10,7 @@ for SHARD in ${SHARDS[@]}; do
     if screen_exists "$SESSION"; then
         echo "Cannot start the server screen sessions because the session \"${SESSION}\" already exists.\nClose all already running sessions and try again.s"
         exit 1
+        return
     fi
 done
 
@@ -36,6 +37,7 @@ fi
 if [[ $? -ne 0 ]]; then
     echo "Updating server proccess failed! Status: $?"
     exit 1
+    return
 else
     echo "Updating server proccess finished successfully."
 fi

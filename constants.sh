@@ -16,6 +16,7 @@ if [ -f "$DEFAULT_CONFIG_FILE" ]; then
 else
     echo "Configuration failed to load: ${DEFAULT_CONFIG_FILE} not found. Try to redownload the script."
     exit 1
+    return
 fi
 
 . "$DEFAULT_CONFIG_FILE" # For compatibility with newer configurations not yet configured locally.

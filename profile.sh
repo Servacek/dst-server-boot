@@ -1,3 +1,4 @@
+#!bin/bash
 
 ####################### CZSK ADMIN #########################
 
@@ -14,6 +15,7 @@ add_alias() {
 if groups $USER | grep -q "\b${GROUP_NAME}\b"; then
     echo "######################### CZSK SERVER #########################"
     BOOT_DIRECTORY="/home/steam/.klei/DoNotStarveTogether/.game/boot"
+    cd $BOOT_DIRECTORY
     . "${BOOT_DIRECTORY}/constants.sh"
     echo ""
     echo "AVAILABLE ALIASES"
