@@ -1,35 +1,12 @@
 #!/bin/bash
 
-DEFAULT_CONFIG_FILE="config/default_config.sh"
-CONFIG_FILE="config/config.sh"
-SCREEN_CONFIG_FILE="config/screen.conf"
-
-UPDATE_LOG_FILE="update.log"
-
-echo "Loading configuration..."
-if [ -f "$DEFAULT_CONFIG_FILE" ]; then
-    if [ ! -f $CONFIG_FILE ]; then
-        cp "$DEFAULT_CONFIG_FILE" "$CONFIG_FILE"
-    fi
-else
-    echo "Configuration failed to load: ${DEFAULT_CONFIG_FILE} not found. Try to redownload the script."
-    exit 1
-fi
-
-source "$DEFAULT_CONFIG_FILE" # For compatibility with newer configurations not yet configured locally.
-source "$CONFIG_FILE"
-
-###########################################
-
-screen_exists() {
-    screen -ls | grep "\b${1}[[:space:]]("
-}
+source constants.sh
 
 ###########################################
 
 # Make sure no other session created by this script are currently running
 for SHARD in ${SHARDS[@]}; do
-    SESSION="${CLUSTER}_${SHARD}"
+    SESSION="${SHARD_SESSION_PREFIX}${SHARD}"
     if screen_exists "$SESSION"; then
         echo "Cannot start the server screen sessions because the session \"${SESSION}\" already exists.\nClose all already running sessions and try again.s"
         exit 1
@@ -44,12 +21,12 @@ fi
 
 echo "Starting the server update process..."
 # Wait until the process finishes and also print out the output to the console.
-bash -c "${STEAMCMD} \
+${STEAMCMD} \
     +force_install_dir ${GAMEDIR} \
     +login ${LOGIN} \
-    +app_update ${GAMEID} \
+    +app_update ${GAMESERVERID} \
     $(if [[ $VALIDATE == true ]]; then echo "validate"; fi) \
-    +quit"
+    +quit
 
 if [ -f "$MODS_SETUP_FILE_BACKUP_PATH" ]; then
     echo "Restoring the mods setup file..."
@@ -66,7 +43,7 @@ fi
 echo "Starting up the shards..."
 for INDEX in ${!SHARDS[@]}; do
     SHARD_NAME=${SHARDS[$INDEX]} # Should always have an value, since names are required.
-    SESSION=${CLUSTER}_${SHARDS[$INDEX]}
+    SESSION=${SHARD_SESSION_PREFIX}${SHARDS[$INDEX]}
 
     # Optional
     CPU_CORE=${CPUCORES[$INDEX]}
@@ -74,21 +51,28 @@ for INDEX in ${!SHARDS[@]}; do
 
     echo "Starting ${SHARD_NAME}..."
     taskset -c $(if [[ -n "$CPU_CORE" ]]; then echo "$CPU_CORE"; else echo "0-$(($(nproc)-1))"; fi) \
-        screen -c ${SCREEN_CONFIG_FILE} -m -d -U -t "$SHARD_NAME" -S "${SESSION}" "$DST_BIN" \
-            -persistent_storage_root "$PERSISTENT_STORAGE_ROOT" \
-            -conf_dir "$CONF_DIR" \
-            -cluster "$CLUSTER" \
-            -shard "$SHARD_NAME" \
-            -backup_log_count "$BACKUP_LOG_COUNT" \
-            -only_update_server_mods "$ONLY_UPDATE_SERVER_MODS" \
-            -skip_update_server_mods "$SKIP_UPDATE_SERVER_MODS" \
-            -bind_ip "$BIND_IP" \
-            -tick "$TICK" \
-            $(if [[ "$PORT" != "" ]]; then echo "-port ${PORT}"; fi) \
+        screen -c ${SCREEN_CONFIG_FILE} -m -d -U -t "$SHARD_NAME" -S "${SESSION}" bash -c 'while ! ('"$DST_BIN"' \
+            -persistent_storage_root '"$PERSISTENT_STORAGE_ROOT"' \
+            -conf_dir '"$CONF_DIR"' \
+            -cluster '"$CLUSTER"' \
+            -shard '"$SHARD_NAME"' \
+            -backup_log_count '"$BACKUP_LOG_COUNT"' \
+            -only_update_server_mods '"$ONLY_UPDATE_SERVER_MODS"' \
+            -skip_update_server_mods '"$SKIP_UPDATE_SERVER_MODS"' \
+            -bind_ip '"$BIND_IP"' \
+            -tick '"$TICK"' \
+            $(if [[ '"$PORT"' != "" ]]; then echo "-port '"${PORT}"'"; fi)
+        ); do
+            echo "Looks like the server has crashed! Restarting in '${TIME_UNTIL_AUTO_RESTART}' seconds...";
+            sleep '${TIME_UNTIL_AUTO_RESTART}';
+        done'
 
     if screen_exists "$SESSION"; then
         echo "Started ${SHARD_NAME}!"
     else
         echo "Failed to start ${SHARD_NAME}! Status: $?"
     fi
+
+    # Give the Master shard some time to initialize before the slave shards.
+    sleep $TIME_BETWEEN_SHARDS
 done

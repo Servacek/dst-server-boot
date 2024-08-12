@@ -58,7 +58,8 @@ BIND_IP="127.0.0.1"
 ################## CONFIGURATION #################
 
 VALIDATE=true;
-GAMEID=343050;
+GAMESERVERID=343050
+GAMEID=322330;
 STEAMCMD="/usr/games/steamcmd";
 LOGIN="anonymous";
 # Directory where you Don't Starve Together Dedicated Server lives
@@ -69,6 +70,9 @@ MODS_SETUP_FILE_BACKUP_PATH=$MODS_SETUP_FILE_PATH.bak;
 X64=true;
 DST_BIN="${GAMEDIR}/$(if [[ $X64 == true ]]; then echo "bin64"; else echo "bin"; fi)/dontstarve_dedicated_server_nullrenderer$(if [[ $X64 == true ]]; then echo "_x64"; fi)"
 IGNORE_UPDATEM_FAILURE=false;
+
+SHARD_SESSION_PREFIX="${CLUSTER}_"
+SESSION_OWNER="steam"
 
 ################## SHARDS #################
 
@@ -91,5 +95,8 @@ PORTS=()
 # It is assumed this core is not used by another process.
 # This is used by the server updating process as well before the server itself starts.
 MAIN_CPUCORE=${CPUCORES[0]}
+
+TIME_UNTIL_AUTO_RESTART=60 # Seconds
+TIME_BETWEEN_SHARDS=10 # Seconds
 
 #############################################
