@@ -8,7 +8,7 @@ GROUP_NAME="czsk-admin"
 # A wrapper around the built-in "alias" command.
 add_alias() {
     alias ${1}="${2}"
-    echo "   - ${1}	-> ${3}"
+    echo "   - ${1}\t-> ${3}"
 }
 
 exit() {
@@ -40,10 +40,10 @@ if groups $USER | grep -q "\b${GROUP_NAME}\b"; then
     #               echo "PID: $pid, Source File: $source_file, Affinity: $affinity"; done'
 
     echo ""
-    add_alias "c_reload" "systemctl reload ${SERVICE}.service" "The same effect as c_reload() in game but is being executed by systemctl itself."
-    add_alias "c_reboot" "systemctl restart ${SERVICE}.service" "The same effect as c_reboot() in game but is being executed by systemctl itself."
-    add_alias "c_start" "systemctl start ${SERVICE}.service" "Updates the game and starts the shards. The same as running "systemctl start" on the server's service."
-    add_alias "c_shutdown" "systemctl stop ${SERVICE}.service" "The same effect as c_shutdown() in game but is being executed by systemctl itself."
+    add_alias "c_reload" "sudo systemctl reload ${SERVICE}.service" "The same effect as c_reload() in game but is being executed by systemctl itself."
+    add_alias "c_reboot" "sudo systemctl restart ${SERVICE}.service" "The same effect as c_reboot() in game but is being executed by systemctl itself."
+    add_alias "c_start" "sudo systemctl start ${SERVICE}.service" "Updates the game and starts the shards. The same as running "systemctl start" on the server's service."
+    add_alias "c_shutdown" "sudo systemctl stop ${SERVICE}.service" "The same effect as c_shutdown() in game but is being executed by systemctl itself."
     echo ""
     #cat "${BOOT_DIR}/commands.motd" # Display our custom MOTD
     echo "###############################################################"
