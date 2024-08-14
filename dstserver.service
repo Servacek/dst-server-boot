@@ -16,14 +16,14 @@ GuessMainPID=no
 # Since we do not have a MAIN process, this is actually irelevant.
 Restart=never
 # The user the screen sessions will run under.
-User=<NAME OF THE OWNER OF THIS SERVICE>
-# Group=steam
+User=<OWNER USER NAME>
+Group=<OWNER GROUP NAME>
 # This has to be set in order for proper reading of configuration files
 # with relative paths inside the run script.
-WorkingDirectory=<PATH TO YOUR BOOT FOLDER>
-ExecStart=start.sh
-ExecReload=reload.sh
-ExecStop=stop.sh
+WorkingDirectory=<PATH TO YOUR BOOT DIRECTORY>
+ExecStart=<PATH TO YOUR BOOT DIRECTORY>/start.sh
+ExecReload=<PATH TO YOUR BOOT DIRECTORY>/reload.sh
+ExecStop=<PATH TO YOUR BOOT DIRECTORY>/stop.sh
 
 [Install]
 WantedBy=multi-user.target

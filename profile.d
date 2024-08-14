@@ -47,6 +47,7 @@ if groups $USER | grep -q "\b${GROUP_NAME}\b"; then
     echo ""
     #cat "${BOOT_DIR}/commands.motd" # Display our custom MOTD
     echo "###############################################################"
+    echo ""
     cd ${CLUSTER_PATH}/${CLUSTER}
 fi
 
