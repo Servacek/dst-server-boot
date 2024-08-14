@@ -25,6 +25,13 @@ fi
 CONFIG_PATH="${PERSISTENT_STORAGE_ROOT}/${CONF_DIR}"
 CLUSTER_PATH="${CONFIG_PATH}/${CLUSTER_NAME}";
 
+SHARD_SCREEN_SESSIONS=()
+for SHARD in ${SHARDS[@]}; do
+    SHARD_SCREEN_SESSIONS+=("${SHARD_SESSION_PREFIX}${SHARD}")
+done
+
+MASTER_SCREEN_SESSION="${SHARD_SCREEN_SESSIONS[0]}"
+
 ###########################################
 
 screen_exists() {

@@ -5,10 +5,9 @@
 ###########################################
 
 # Make sure no other session created by this script are currently running
-for SHARD in ${SHARDS[@]}; do
-    SESSION="${SHARD_SESSION_PREFIX}${SHARD}"
-    if screen_exists "$SESSION"; then
-        echo "Cannot start the server screen sessions because the session \"${SESSION}\" already exists.\nClose all already running sessions and try again.s"
+for SHARD_SCREEN_SESSION in ${SHARD_SCREEN_SESSIONS[@]}; do
+    if screen_exists "$SHARD_SCREEN_SESSION"; then
+        echo "Cannot start the server screen sessions because the session \"${SHARD_SCREEN_SESSION}\" already exists.\nClose all already running sessions and try again."
         exit 1
         return
     fi
@@ -69,7 +68,7 @@ for INDEX in ${!SHARDS[@]}; do
             sleep '${TIME_UNTIL_AUTO_RESTART}';
         done'
 
-    if screen_exists "$SESSION"; then
+    if screen_exists "${SHARD_SCREEN_SESSIONS[$INDEX]}"; then
         echo "Started ${SHARD_NAME}!"
     else
         echo "Failed to start ${SHARD_NAME}! Status: $?"
