@@ -4,11 +4,7 @@ Requires=network-online.target
 After=network-online.target
 
 [Service]
-After=network.target
 Type=forking
-# Specifies when the manager should consider the service to be finished.
-# One of main or cgroup:
-ExitType=cgroup
 # Takes a boolean value that specifies whether the service shall
 # be considered active even when all its processes exited. Defaults to no.
 RemainAfterExit=no
