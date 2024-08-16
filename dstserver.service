@@ -12,14 +12,16 @@ GuessMainPID=no
 # Since we do not have a MAIN process, this is actually irelevant.
 Restart=never
 # The user the screen sessions will run under.
-User=<OWNER USER NAME>
-Group=<OWNER GROUP NAME>
+User=<MANAGING USER NAME>
+Group=<MANAGING GROUP NAME>
 # This has to be set in order for proper reading of configuration files
 # with relative paths inside the run script.
 WorkingDirectory=<PATH TO YOUR BOOT DIRECTORY>
 ExecStart=<PATH TO YOUR BOOT DIRECTORY>/start.sh
 ExecReload=<PATH TO YOUR BOOT DIRECTORY>/reload.sh
 ExecStop=<PATH TO YOUR BOOT DIRECTORY>/stop.sh
+StandardOutput=journal+console
+StandardError=journal+console
 
 [Install]
 WantedBy=multi-user.target
