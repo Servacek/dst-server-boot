@@ -83,7 +83,7 @@ PLAYERS=""
 # Change the address that the server binds to when listening for player connections.
 # This is an advanced feature that most people will not need to use.
 # This option overrides the [SHARD] / bind_ip setting in cluster.ini.
-# Default value: 127.0.0.1
+# Default value: 0.0.0.0
 BIND_IP=""
 
 # Set the name of the shard directory that this server will use.
