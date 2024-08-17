@@ -34,7 +34,7 @@ add_alias "ports" ' \
 for session in ${SHARD_SCREEN_SESSIONS[@]}; do \
     screen_pid=$(sudo -u "${SESSION_OWNER}" screen -ls | grep "${session}" | awk "{print $1}" | cut -d. -f1 | sed "s/^[ \t]*//;s/[ \t]*$//"); \
     pid=$(_deepest="$screen_pid"; while [[ (! -z "$_deepest") && $(pgrep -P "$_deepest") ]]; do _deepest=$(pgrep -P "$_deepest"); done; echo "$_deepest"); \
-    if [[ -z "$pid" ]]; then \
+    if [[ ! -z "$pid" ]]; then \
         echo "${session}:"; \
         netstat -tulnp | grep {pid}; \
         echo ""; \
