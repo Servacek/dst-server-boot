@@ -20,7 +20,7 @@ if [ -f "$DEFAULT_CONFIG_FILE" ]; then
         cp "$DEFAULT_CONFIG_FILE" "$CONFIG_FILE"
     fi
 else
-    echo "${RED}[Error] Configuration failed to load: ${DEFAULT_CONFIG_FILE} not found. Try to redownload the script.${NC}"
+    echo -e "${RED}[Error] Configuration failed to load: ${DEFAULT_CONFIG_FILE} not found. Try to redownload the script.${NC}"
     exit 1
     return
 fi

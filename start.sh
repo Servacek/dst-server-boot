@@ -7,7 +7,7 @@
 # Make sure no other session created by this script are currently running
 for SHARD_SCREEN_SESSION in ${SHARD_SCREEN_SESSIONS[@]}; do
     if screen_exists "$SHARD_SCREEN_SESSION"; then
-        echo "${RED}[Error] Cannot start the server screen sessions because the session \"${SHARD_SCREEN_SESSION}\" already exists.\nRun the stop command first and then try again.${NC}"
+        echo -e "${RED}[Error] Cannot start the server screen sessions because the session \"${SHARD_SCREEN_SESSION}\" already exists.\nRun the stop command first and then try again.${NC}"
         exit 1
         return
     fi
@@ -28,7 +28,7 @@ echo "Starting the server update process..."
     +login "${LOGIN}" \
     +app_update "${GAMESERVERID}" \
     $(if [[ $VALIDATE == true ]]; then echo "validate"; fi) \
-    +quit &
+    +quit
 
 if [ -f "$MODS_SETUP_FILE_BACKUP_PATH" ]; then
     echo "Restoring the mods setup file..."
@@ -36,11 +36,11 @@ if [ -f "$MODS_SETUP_FILE_BACKUP_PATH" ]; then
 fi
 
 if [[ $? -ne 0 ]]; then
-    echo "${RED}[Error] Updating server proccess failed! Status: $?${NC}"
+    echo -e "${RED}[Error] Updating server proccess failed! Status: $?${NC}"
     exit 1
     return
 else
-    echo "${GREEN}Updating server proccess finished successfully.${NC}"
+    echo -e "${GREEN}Updating server proccess finished successfully.${NC}"
 fi
 
 # Make sure we have a screen configuration file.
@@ -68,32 +68,32 @@ for INDEX in ${!SHARDS[@]}; do
     echo "Starting shard ${SHARD_NAME}..."
     taskset -c $(if [[ -n "$CPU_CORE" ]]; then echo "$CPU_CORE"; else echo "0-$(($(nproc)-1))"; fi) \
         screen -c ${SCREEN_CONFIG_FILE} -m -d -U -t "$SHARD_NAME" -S "${SESSION}" bash -c 'while ! ('"$DST_BIN"' \
-            $(if [[ ! -z '"$PERSISTENT_STORAGE_ROOT"' ]]; then echo "-persistent_storage_root '"${PERSISTENT_STORAGE_ROOT}"'"; fi) \
-            $(if [[ ! -z '"$CONF_DIR"' ]]; then echo "-conf_dir '"${CONF_DIR}"'"; fi) \
-            $(if [[ ! -z '"$CLUSTER"' ]]; then echo "-cluster '"${CLUSTER}"'"; fi) \
-            $(if [[ ! -z '"$SHARD_NAME"' ]]; then echo "-shard '"${SHARD_NAME}"'"; fi) \
-            $(if [[ ! -z '"$BACKUP_LOG_COUNT"' ]]; then echo "-backup_log_count '"${BACKUP_LOG_COUNT}"'"; fi) \
-            $(if [[ ! -z '"$ONLY_UPDATE_SERVER_MODS"' ]]; then echo "-only_update_server_mods '"${ONLY_UPDATE_SERVER_MODS}"'"; fi) \
-            $(if [[ ! -z '"$SKIP_UPDATE_SERVER_MODS"' ]]; then echo "-skip_update_server_mods '"${SKIP_UPDATE_SERVER_MODS}"'"; fi) \
-            $(if [[ ! -z '"$BIND_IP"' ]]; then echo "-bind_ip '"${BIND_IP}"'"; fi) \
-            $(if [[ ! -z '"$TICK"' ]]; then echo "-tick '"${TICK}"'"; fi) \
-            $(if [[ ! -z '"$PLAYERS"' ]]; then echo "-players '"${PLAYERS}"'"; fi) \
-            $(if [[ ! -z '"$PORT"' ]]; then echo "-port '"${PORT}"'"; fi) \
-            $(if [[ ! -z '"$STEAM_MASTER_SERVER_PORT"' ]]; then echo "-steam_master_server_port '"${STEAM_MASTER_SERVER_PORT}"'"; fi) \
-            $(if [[ ! -z '"$STEAM_AUTHENTICATION_PORT"' ]]; then echo "-steam_authentication_port '"${STEAM_AUTHENTICATION_PORT}"'"; fi) \
-            $(if [[ ! -z '"$MONITOR_PARENT_PROCESS"' ]]; then echo "-monitor_parent_process '"${MONITOR_PARENT_PROCESS}"'"; fi) \
+            $(if [[ ! -n '"$PERSISTENT_STORAGE_ROOT"' ]]; then echo "-persistent_storage_root '"${PERSISTENT_STORAGE_ROOT}"'"; fi) \
+            $(if [[ ! -n '"$CONF_DIR"' ]]; then echo "-conf_dir '"${CONF_DIR}"'"; fi) \
+            $(if [[ ! -n '"$CLUSTER"' ]]; then echo "-cluster '"${CLUSTER}"'"; fi) \
+            $(if [[ ! -n '"$SHARD_NAME"' ]]; then echo "-shard '"${SHARD_NAME}"'"; fi) \
+            $(if [[ ! -n '"$BACKUP_LOG_COUNT"' ]]; then echo "-backup_log_count '"${BACKUP_LOG_COUNT}"'"; fi) \
+            $(if [[ ! -n '"$ONLY_UPDATE_SERVER_MODS"' ]]; then echo "-only_update_server_mods '"${ONLY_UPDATE_SERVER_MODS}"'"; fi) \
+            $(if [[ ! -n '"$SKIP_UPDATE_SERVER_MODS"' ]]; then echo "-skip_update_server_mods '"${SKIP_UPDATE_SERVER_MODS}"'"; fi) \
+            $(if [[ ! -n '"$BIND_IP"' ]]; then echo "-bind_ip '"${BIND_IP}"'"; fi) \
+            $(if [[ ! -n '"$TICK"' ]]; then echo "-tick '"${TICK}"'"; fi) \
+            $(if [[ ! -n '"$PLAYERS"' ]]; then echo "-players '"${PLAYERS}"'"; fi) \
+            $(if [[ ! -n '"$PORT"' ]]; then echo "-port '"${PORT}"'"; fi) \
+            $(if [[ ! -n '"$STEAM_MASTER_SERVER_PORT"' ]]; then echo "-steam_master_server_port '"${STEAM_MASTER_SERVER_PORT}"'"; fi) \
+            $(if [[ ! -n '"$STEAM_AUTHENTICATION_PORT"' ]]; then echo "-steam_authentication_port '"${STEAM_AUTHENTICATION_PORT}"'"; fi) \
+            $(if [[ ! -n '"$MONITOR_PARENT_PROCESS"' ]]; then echo "-monitor_parent_process '"${MONITOR_PARENT_PROCESS}"'"; fi) \
             $(if [[ '"$OFFLINE"' == true ]]; then echo "-offline"; fi) \
             $(if [[ '"$DISABLEDATACOLLECTION"' == true ]]; then echo "-disabledatacollection"; fi) \
             $(if [[ '"$CLOUDSERVER"' == true && '"$INDEX"' == '"$MASTER_SHARD_INDEX"' ]]; then echo "-cloudserver"; fi)
         ); do
-            echo "'${RED}'[Error] Looks like the server has crashed! Restarting in '${TIME_UNTIL_AUTO_RESTART}' seconds...'${NC}'";
+            echo -e "'${RED}'[Error] Looks like the server has crashed! Restarting in '${TIME_UNTIL_AUTO_RESTART}' seconds...'${NC}'";
             sleep '${TIME_UNTIL_AUTO_RESTART}';
         done'
 
     if screen_exists "${SHARD_SCREEN_SESSIONS[$INDEX]}"; then
-        echo "${GREEN}Process for shard ${SHARD_NAME} has successfully started!${NC}"
+        echo -e "${GREEN}Process for shard ${SHARD_NAME} has successfully started!${NC}"
     else
-        echo "${RED}[Error] Failed to start ${SHARD_NAME}! Status: $?${NC}"
+        echo -e "${RED}[Error] Failed to start ${SHARD_NAME}! Status: $?${NC}"
     fi
 
     # Give the Master shard some time to initialize before the slave shards.
