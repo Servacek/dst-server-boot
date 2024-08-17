@@ -7,7 +7,7 @@
 # Make sure no other session created by this script are currently running
 for SHARD_SCREEN_SESSION in ${SHARD_SCREEN_SESSIONS[@]}; do
     if screen_exists "$SHARD_SCREEN_SESSION"; then
-        echo "Cannot start the server screen sessions because the session \"${SHARD_SCREEN_SESSION}\" already exists.\nClose all already running sessions and try again."
+        echo "${RED}[Error] Cannot start the server screen sessions because the session \"${SHARD_SCREEN_SESSION}\" already exists.\nRun the stop command first and then try again.${NC}"
         exit 1
         return
     fi
@@ -28,18 +28,33 @@ echo "Starting the server update process..."
     $(if [[ $VALIDATE == true ]]; then echo "validate"; fi) \
     +quit
 
+netstat -tulnp | grep "$!"
+
 if [ -f "$MODS_SETUP_FILE_BACKUP_PATH" ]; then
     echo "Restoring the mods setup file..."
     mv "$MODS_SETUP_FILE_BACKUP_PATH" "$MODS_SETUP_FILE_PATH"
 fi
 
 if [[ $? -ne 0 ]]; then
-    echo "Updating server proccess failed! Status: $?"
+    echo "${RED}[Error] Updating server proccess failed! Status: $?${NC}"
     exit 1
     return
 else
-    echo "Updating server proccess finished successfully."
+    echo "${GREEN}Updating server proccess finished successfully.${NC}"
 fi
+
+# Make sure we have a screen configuration file.
+# But it's totally OK to not have one.
+if [ -f "$DEFAULT_SCREEN_CONFIG_FILE" ]; then
+    if [ ! -f "$SCREEN_CONFIG_FILE" ]; then
+        echo "Copying $DEFAULT_SCREEN_CONFIG_FILE to $SCREEN_CONFIG_FILE..."
+        cp "$DEFAULT_SCREEN_CONFIG_FILE" "$SCREEN_CONFIG_FILE"
+    fi
+else
+    echo "[Warn] Screen configuration files not found."
+fi
+
+exit 0
 
 echo "Starting up the shards..."
 for INDEX in ${!SHARDS[@]}; do
@@ -52,7 +67,7 @@ for INDEX in ${!SHARDS[@]}; do
     STEAM_MASTER_SERVER_PORT=${STEAM_MASTER_SERVER_PORTS[$INDEX]}
     STEAM_AUTHENTICATION_PORT=${STEAM_AUTHENTICATION_PORTS[$INDEX]}
 
-    echo "Starting ${SHARD_NAME}..."
+    echo "Starting shard ${SHARD_NAME}..."
     taskset -c $(if [[ -n "$CPU_CORE" ]]; then echo "$CPU_CORE"; else echo "0-$(($(nproc)-1))"; fi) \
         screen -c ${SCREEN_CONFIG_FILE} -m -d -U -t "$SHARD_NAME" -S "${SESSION}" bash -c 'while ! ('"$DST_BIN"' \
             $(if [[ ! -z '"$PERSISTENT_STORAGE_ROOT"' ]]; then echo "-persistent_storage_root '"${PERSISTENT_STORAGE_ROOT}"'"; fi) \
@@ -73,14 +88,14 @@ for INDEX in ${!SHARDS[@]}; do
             $(if [[ '"$DISABLEDATACOLLECTION"' == true ]]; then echo "-disabledatacollection"; fi) \
             $(if [[ '"$CLOUDSERVER"' == true && '"$INDEX"' == '"$MASTER_SHARD_INDEX"' ]]; then echo "-cloudserver"; fi)
         ); do
-            echo "Looks like the server has crashed! Restarting in '${TIME_UNTIL_AUTO_RESTART}' seconds...";
+            echo "'${RED}'[Error] Looks like the server has crashed! Restarting in '${TIME_UNTIL_AUTO_RESTART}' seconds...'${NC}'";
             sleep '${TIME_UNTIL_AUTO_RESTART}';
         done'
 
     if screen_exists "${SHARD_SCREEN_SESSIONS[$INDEX]}"; then
-        echo "Started ${SHARD_NAME}!"
+        echo "${GREEN}Process for shard ${SHARD_NAME} has successfully started!${NC}"
     else
-        echo "Failed to start ${SHARD_NAME}! Status: $?"
+        echo "${RED}[Error] Failed to start ${SHARD_NAME}! Status: $?${NC}"
     fi
 
     # Give the Master shard some time to initialize before the slave shards.

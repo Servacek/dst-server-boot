@@ -138,10 +138,14 @@ SHARD_SESSION_PREFIX="${CLUSTER}_"
 SESSION_OWNER="steam"
 
 SERVICE="dstserver"
+DST_SERVER_PROCESS_NAME="dontstarve_dedi"
 
 MASTER_SHARD_INDEX=0
 
 TIME_UNTIL_AUTO_RESTART=60 # Seconds
 TIME_BETWEEN_SHARDS=10 # Seconds
+
+SHUTDOWN_COMMAND="c_shutdown(true)"
+RELOAD_COMMAND="c_reset()"
 
 #############################################
