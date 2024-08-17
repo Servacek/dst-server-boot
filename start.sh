@@ -21,15 +21,14 @@ fi
 
 echo "Starting the server update process..."
 # Wait until the process finishes and also print out the output to the console.
+# We do not care about steamcmd's ports because that should be centralized anyway
+# and the ports are static as far as I know.
 "${STEAMCMD}" \
     +force_install_dir "${GAMEDIR}" \
     +login "${LOGIN}" \
     +app_update "${GAMESERVERID}" \
     $(if [[ $VALIDATE == true ]]; then echo "validate"; fi) \
     +quit &
-
-echo "PID: $!"
-netstat -tulnp | grep "$!"
 
 if [ -f "$MODS_SETUP_FILE_BACKUP_PATH" ]; then
     echo "Restoring the mods setup file..."
@@ -54,8 +53,6 @@ if [ -f "$DEFAULT_SCREEN_CONFIG_FILE" ]; then
 else
     echo "[Warn] Screen configuration files not found."
 fi
-
-exit 0
 
 echo "Starting up the shards..."
 for INDEX in ${!SHARDS[@]}; do
