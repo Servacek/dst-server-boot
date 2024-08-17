@@ -17,4 +17,4 @@ done
 
 echo "All shard screen sessions should be shut down now."
 
-} 2> &1 > ${LOG_FILE}
+} 2>&1 > ${LOG_FILE}

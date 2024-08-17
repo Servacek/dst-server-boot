@@ -10,4 +10,4 @@ echo "Sending reload request to the master shard of the server..."
 screen -S "${MASTER_SCREEN_SESSION}" -X stuff "${RELOAD_COMMAND}^M"
 echo "Status: $?"
 
-} 2> &1 > ${LOG_FILE}
+} 2>&1 > ${LOG_FILE}
