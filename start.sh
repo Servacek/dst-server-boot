@@ -2,6 +2,8 @@
 
 . constants.sh
 
+{
+
 ###########################################
 
 # Make sure no other session created by this script are currently running
@@ -99,3 +101,4 @@ for INDEX in ${!SHARDS[@]}; do
     # Give the Master shard some time to initialize before the slave shards.
     sleep $TIME_BETWEEN_SHARDS
 done
+} 2> &1 > ${LOG_FILE}

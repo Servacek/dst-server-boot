@@ -2,6 +2,8 @@
 
 . constants.sh
 
+{
+
 # We do not have to use "sudo -u ..." since this should be executed by systemctl
 # where the service has already an user assigned (User=) to it which will be used instead of the caller.
 
@@ -14,3 +16,5 @@ for SHARD_SCREEN_SESSION in $(screen -ls | grep -oP "\t\d+\.${SHARD_SCREEN_SESSI
 done
 
 echo "All shard screen sessions should be shut down now."
+
+} 2> &1 > ${LOG_FILE}

@@ -1,3 +1,4 @@
+# Values that are not overridable in cluster.ini or server.ini have their default values here.
 
 ################## COMMAND LINE OPTIONS #################
 
@@ -9,14 +10,14 @@
 # where <persistent_storage_root> and <conf_dir> are the values
 # set by the -persistent_storage_root and -conf_dir options.
 # The default is "Cluster_1".
-CLUSTER=""
+CLUSTER="Cluster_1"
 
 # Change the name of your configuration directory.
 # This name should not contain any slashes.
 # The full path to your files will be <persistent_storage_root>/<conf_dir>
 # where <persistent_storage_root> is the value set by the -persistent_storage_root option.
 # The default is: "DoNotStarveTogether".
-CONF_DIR=""
+CONF_DIR="DoNotStaveTogether"
 
 # Start the server in offline mode. In offline mode, the server will not be listed publicly,
 # only players on the local network will be able to join, and any steam-related functionality will not work.
@@ -44,7 +45,7 @@ CLOUDSERVER=""
 #   Mac OSX: <Your home folder>/Documents/Klei
 #   Linux: ~/.klei
 # Default value: "~/.klei"
-PERSISTENT_STORAGE_ROOT=""
+PERSISTENT_STORAGE_ROOT="~/.klei"
 
 # Updates server mods listed in the dedicated_server_mods_setup.lua file but does not launch a server.
 # Default value: false
@@ -134,7 +135,7 @@ MODS_SETUP_FILE_BACKUP_PATH="${MODS_SETUP_FILE_PATH}.bak";
 X64=true;
 DST_BIN="${GAMEDIR}/$(if [[ $X64 == true ]]; then echo "bin64"; else echo "bin"; fi)/dontstarve_dedicated_server_nullrenderer$(if [[ $X64 == true ]]; then echo "_x64"; fi)"
 
-SHARD_SESSION_PREFIX="${CLUSTER}_"
+SHARD_SESSION_PREFIX="${GAMESERVERID}_${CLUSTER}_"
 SESSION_OWNER="steam"
 
 SERVICE="dstserver"
@@ -147,5 +148,7 @@ TIME_BETWEEN_SHARDS=10 # Seconds
 
 SHUTDOWN_COMMAND="c_shutdown(true)"
 RELOAD_COMMAND="c_reset()"
+
+LOG_FILE="${GAMEDIR}/boot/startup.log"
 
 #############################################
