@@ -9,5 +9,8 @@
 # This is in order to cleanup some of the old sessions in case something goes wrong.
 for SHARD_SCREEN_SESSION in $(screen -ls | grep -oP "\t\d+\.${SHARD_SCREEN_SESSION_PREFIX}\w*" | awk '{print $1}'); do
     echo "Shutting down shard screen session ${SHARD_SCREEN_SESSION}...";
-    screen -S "$SHARD_SCREEN_SESSION" -X stuff "${SHUTDOWN_COMMAND}^M"
+    screen -S "$SHARD_SCREEN_SESSION" -X stuff "${SHUTDOWN_COMMAND}^M";
+    echo "Status: $?";
 done
+
+echo "All shard screen sessions should be shut down now."
