@@ -68,20 +68,20 @@ for INDEX in ${!SHARDS[@]}; do
     echo "Starting shard ${SHARD_NAME}..."
     taskset -c $(if [[ -n "$CPU_CORE" ]]; then echo "$CPU_CORE"; else echo "0-$(($(nproc)-1))"; fi) \
         screen -c ${SCREEN_CONFIG_FILE} -m -d -U -t "$SHARD_NAME" -S "${SESSION}" bash -c 'while ! ('"$DST_BIN"' \
-            $(if [[ ! -n '"$PERSISTENT_STORAGE_ROOT"' ]]; then echo "-persistent_storage_root '"${PERSISTENT_STORAGE_ROOT}"'"; fi) \
-            $(if [[ ! -n '"$CONF_DIR"' ]]; then echo "-conf_dir '"${CONF_DIR}"'"; fi) \
-            $(if [[ ! -n '"$CLUSTER"' ]]; then echo "-cluster '"${CLUSTER}"'"; fi) \
-            $(if [[ ! -n '"$SHARD_NAME"' ]]; then echo "-shard '"${SHARD_NAME}"'"; fi) \
-            $(if [[ ! -n '"$BACKUP_LOG_COUNT"' ]]; then echo "-backup_log_count '"${BACKUP_LOG_COUNT}"'"; fi) \
-            $(if [[ ! -n '"$ONLY_UPDATE_SERVER_MODS"' ]]; then echo "-only_update_server_mods '"${ONLY_UPDATE_SERVER_MODS}"'"; fi) \
-            $(if [[ ! -n '"$SKIP_UPDATE_SERVER_MODS"' ]]; then echo "-skip_update_server_mods '"${SKIP_UPDATE_SERVER_MODS}"'"; fi) \
-            $(if [[ ! -n '"$BIND_IP"' ]]; then echo "-bind_ip '"${BIND_IP}"'"; fi) \
-            $(if [[ ! -n '"$TICK"' ]]; then echo "-tick '"${TICK}"'"; fi) \
-            $(if [[ ! -n '"$PLAYERS"' ]]; then echo "-players '"${PLAYERS}"'"; fi) \
-            $(if [[ ! -n '"$PORT"' ]]; then echo "-port '"${PORT}"'"; fi) \
-            $(if [[ ! -n '"$STEAM_MASTER_SERVER_PORT"' ]]; then echo "-steam_master_server_port '"${STEAM_MASTER_SERVER_PORT}"'"; fi) \
-            $(if [[ ! -n '"$STEAM_AUTHENTICATION_PORT"' ]]; then echo "-steam_authentication_port '"${STEAM_AUTHENTICATION_PORT}"'"; fi) \
-            $(if [[ ! -n '"$MONITOR_PARENT_PROCESS"' ]]; then echo "-monitor_parent_process '"${MONITOR_PARENT_PROCESS}"'"; fi) \
+            $(if [[ -n "'"$PERSISTENT_STORAGE_ROOT"'" ]]; then echo "-persistent_storage_root '"${PERSISTENT_STORAGE_ROOT}"'"; fi) \
+            $(if [[ -n "'"$CONF_DIR"'" ]]; then echo "-conf_dir '"${CONF_DIR}"'"; fi) \
+            $(if [[ -n "'"$CLUSTER"'" ]]; then echo "-cluster '"${CLUSTER}"'"; fi) \
+            $(if [[ -n "'"$SHARD_NAME"'" ]]; then echo "-shard '"${SHARD_NAME}"'"; fi) \
+            $(if [[ -n "'"$BACKUP_LOG_COUNT"'" ]]; then echo "-backup_log_count '"${BACKUP_LOG_COUNT}"'"; fi) \
+            $(if [[ -n "'"$ONLY_UPDATE_SERVER_MODS"'" ]]; then echo "-only_update_server_mods '"${ONLY_UPDATE_SERVER_MODS}"'"; fi) \
+            $(if [[ -n "'"$SKIP_UPDATE_SERVER_MODS"'" ]]; then echo "-skip_update_server_mods '"${SKIP_UPDATE_SERVER_MODS}"'"; fi) \
+            $(if [[ -n "'"$BIND_IP"'" ]]; then echo "-bind_ip '"${BIND_IP}"'"; fi) \
+            $(if [[ -n "'"$TICK"'" ]]; then echo "-tick '"${TICK}"'"; fi) \
+            $(if [[ -n "'"$PLAYERS"'" ]]; then echo "-players '"${PLAYERS}"'"; fi) \
+            $(if [[ -n "'"$PORT"'" ]]; then echo "-port '"${PORT}"'"; fi) \
+            $(if [[ -n "'"$STEAM_MASTER_SERVER_PORT"'" ]]; then echo "-steam_master_server_port '"${STEAM_MASTER_SERVER_PORT}"'"; fi) \
+            $(if [[ -n "'"$STEAM_AUTHENTICATION_PORT"'" ]]; then echo "-steam_authentication_port '"${STEAM_AUTHENTICATION_PORT}"'"; fi) \
+            $(if [[ -n "'"$MONITOR_PARENT_PROCESS"'" ]]; then echo "-monitor_parent_process '"${MONITOR_PARENT_PROCESS}"'"; fi) \
             $(if [[ '"$OFFLINE"' == true ]]; then echo "-offline"; fi) \
             $(if [[ '"$DISABLEDATACOLLECTION"' == true ]]; then echo "-disabledatacollection"; fi) \
             $(if [[ '"$CLOUDSERVER"' == true && '"$INDEX"' == '"$MASTER_SHARD_INDEX"' ]]; then echo "-cloudserver"; fi)
