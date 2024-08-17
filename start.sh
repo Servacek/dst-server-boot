@@ -26,8 +26,9 @@ echo "Starting the server update process..."
     +login "${LOGIN}" \
     +app_update "${GAMESERVERID}" \
     $(if [[ $VALIDATE == true ]]; then echo "validate"; fi) \
-    +quit
+    +quit &
 
+echo "PID: $!"
 netstat -tulnp | grep "$!"
 
 if [ -f "$MODS_SETUP_FILE_BACKUP_PATH" ]; then
