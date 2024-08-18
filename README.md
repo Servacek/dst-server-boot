@@ -1,6 +1,8 @@
 # Don't Starve Together Server Boot Script
 Linux shell script for booting up and updating a DST Dedicated server with advanced options and easy configuration.
 
+![image](https://github.com/user-attachments/assets/de891453-18e3-405a-88bb-9b444c775b87)
+
 ## General Dependencies
 - Linux
 - git
@@ -16,8 +18,12 @@ Linux shell script for booting up and updating a DST Dedicated server with advan
 - Ability to select specific core or core range for each of the cluster's shards.
 - Updating of the game's files on boot and file validation without overriding the `dedicated_server_mods_setup.lua` file.
 
+![image](https://github.com/user-attachments/assets/06f0a6a1-ec9f-4ad1-aae0-4c50fa20843e)
+
 ## Notes
 - Tested only on Debian 5.10.149-2 x86_64
+
+![image](https://github.com/user-attachments/assets/06f0a6a1-ec9f-4ad1-aae0-4c50fa20843e)
 
 ## References
 - https://www.freedesktop.org/software/systemd/man/latest/systemd.exec.html
@@ -26,10 +32,6 @@ Linux shell script for booting up and updating a DST Dedicated server with advan
 - https://forums.kleientertainment.com/forums/topic/64441-dedicated-server-quick-setup-guide-linux/
 - https://forums.kleientertainment.com/forums/topic/64552-dedicated-server-settings-guide/
 - https://man7.org/linux/man-pages/man1/taskset.1.html
-
-![image](https://github.com/user-attachments/assets/de891453-18e3-405a-88bb-9b444c775b87)
-
-![image](https://github.com/user-attachments/assets/06f0a6a1-ec9f-4ad1-aae0-4c50fa20843e)
 
 
 
