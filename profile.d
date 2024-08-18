@@ -43,7 +43,7 @@ for session in ${SHARD_SCREEN_SESSIONS[@]}; do \
     pid=$(_deepest="$screen_pid"; while [[ (! -z "$_deepest") && $(pgrep -P "$_deepest") ]]; do _deepest=$(pgrep -P "$_deepest"); done; echo "$_deepest"); \
     if [[ ! -z "$pid" ]]; then \
         echo "${session}:"; \
-        sudo netstat -tulnpa | grep ${pid}; \
+        sudo netstat -tulnp | grep ${pid}; \
         echo ""; \
     else \
         echo -e "$session:\t${RED}inactive${NC}"; \

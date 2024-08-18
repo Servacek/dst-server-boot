@@ -21,7 +21,11 @@ safe_copy_file() { # src, dst
 
 change_field () { # file, key, value
     echo "Overriding field ${2} to ${3}..."
-    sed -i "s|^${2}=.*|${2}=${3}|" "${1}"
+    if grep -q "^${2}=" "${1}"; then
+        sed -i "s|^${2}=.*|${2}=${3}|" "${1}"
+    else
+        echo -e "${RED}WARNING: Field ${2} not found in ${1}${NC}"
+    fi
 }
 
 apply_overrides() { # file, overrides
@@ -106,6 +110,7 @@ declare -A SERVICE_OVERRIDES=(
 
 apply_overrides "${LOCAL_SERVICE_FILE_PATH}" "${SERVICE_OVERRIDES}"
 safe_copy_file "${LOCAL_SERVICE_FILE_PATH}" "${SERVICE_FILE_PATH}"
+echo "File ${SERVICE_FILE_PATH} installed."
 
 ####### PROFILE.D #######
 
@@ -119,6 +124,7 @@ declare -A PROFILE_OVERRIDES=(
 
 apply_overrides "${LOCAL_PROFILE_FILE_PATH}" "${PROFILE_OVERRIDES}"
 safe_copy_file "${LOCAL_PROFILE_FILE_PATH}" "${PROFILE_FILE_PATH}"
+echo "File ${PROFILE_FILE_PATH} installed."
 
 . "${PROFILE_FILE_PATH}"
 
