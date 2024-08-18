@@ -15,7 +15,7 @@ safe_copy_file() { # src, dst
 
     if [[ $COPYING == true ]]; then
         echo "Copying ${1} to ${2}"
-        return sudo cp "${1}" "${2}" && return 0 || return 1
+        return $(sudo cp "${1}" "${2}")
     fi
 
     return 0

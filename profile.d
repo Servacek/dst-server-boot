@@ -31,7 +31,7 @@ add_alias() {
     echo -e "   - ${1}\t-> ${3}"
 }
 
-add_alias "wmods" "cd ${GAMEDIR}/ugc_mods/${CLUSTER_NAME}/Master/content/${GAMEID}" "Change your pwd to the ${CLUSTER} server's ugc_mods directory storing newer workshop mods."
+add_alias "wmods" "cd ${GAMEDIR}/ugc_mods/${CLUSTER}/Master/content/${GAMEID}" "Change your pwd to the ${CLUSTER} server's ugc_mods directory storing newer workshop mods."
 add_alias "mods" "cd ${GAMEDIR}/mods" "Change your pwd to the ${CLUSTER} server's mods directory."
 add_alias "sboot" "cd ${GAMEDIR}/boot" "Change your pwd to the ${CLUSTER} server's boot directory."
 add_alias "blogs" "sudo journalctl -u ${SERVICE}.service -f -q --line=50" "Shows the journal logs of the server's boot process, following new changes."
