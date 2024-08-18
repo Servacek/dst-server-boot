@@ -107,7 +107,7 @@ LOCAL_SERVICE_FILE_PATH="dstserver.service"
 declare -A SERVICE_OVERRIDES=(
     [User]="${SESSION_OWNER}"
     [Group]="${SESSION_OWNER_GROUP}"
-    [WorkingDirectory]="${WORKING_DIRECTORY}"
+    [WorkingDirectory]="${SCRIPT_DIRECTORY}"
 )
 
 apply_overrides "${LOCAL_SERVICE_FILE_PATH}" SERVICE_OVERRIDES
@@ -124,7 +124,7 @@ PROFILE_FILE_PATH="/etc/profile.d/${SESSION_OWNER_GROUP}.sh"
 declare -A PROFILE_OVERRIDES=(
     [GROUP_NAME]="\""${SESSION_OWNER_GROUP}"\""
     [IGNORE_USERS]="("${IGNORE_USERS[@]@Q}")"
-    [BOOT_DIRECTORY]="\""${WORKING_DIRECTORY}"\""
+    [BOOT_DIRECTORY]="\""${SCRIPT_DIRECTORY}"\""
 )
 
 apply_overrides "${LOCAL_PROFILE_FILE_PATH}" PROFILE_OVERRIDES
