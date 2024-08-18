@@ -4,7 +4,7 @@ safe_copy_file() { # src, dst
     COPYING=true
     if [[ -f "${2}" ]]; then
         while true; do
-            read -p "File ${2} already exists. Overwrite it? (y/n)" yn
+            read -p "File ${2} already exists. Overwrite it? [y/n] " yn
             case $yn in
                 [Yy]* ) break;; # Continue
                 [Nn]* ) COPYING=false; break;; # Exit program and open config file in edit mode
@@ -57,10 +57,13 @@ else
     sudo apt-get install libstdc++6:i386 libgcc1:i386 libcurl4-gnutls-dev:i386
 fi
 
-if [[ ! -d "${STEAMCMD}" || ! -f "${STEAMCMD}" ]]; then
+if [[ ! -d "${STEAMCMD}" && ! -f "${STEAMCMD}" ]]; then
     echo "Installing steamcmd..."
     mkdir -p "${STEAMCMD}"
-    cd "${STEAMCMD}"
+    if ! cd "${STEAMCMD}"; then
+        break
+    fi
+
     wget "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz"
     tar -xvzf steamcmd_linux.tar.gz
 
@@ -73,7 +76,7 @@ fi
 mkdir -p "${CLUSTER_PATH}/${CLUSTER}"
 
 if [[ ! -f "${CLUSTER_TOKEN_PATH}" ]]; then
-    echo "No cluster token found in your cluster_token.txt!"
+    echo "No cluster token found in your ${CLUSTER_TOKEN_PATH}!"
     echo "Please visit https://accounts.klei.com/account/game/servers?game=DontStarveTogether login into it and get a token from your existing server ir create a new one via the Add New Server button at the bottom."
     while true; do
         read -p "Enter your newly generated token: " TOKEN
