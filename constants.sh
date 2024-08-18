@@ -34,7 +34,7 @@ echo "Configuration loaded."
 ###########################################
 
 CONFIG_PATH="${PERSISTENT_STORAGE_ROOT}/${CONF_DIR}"
-CLUSTER_PATH="${CONFIG_PATH}/${CLUSTER_NAME}";
+CLUSTER_PATH="${CONFIG_PATH}/${CLUSTER}";
 CLUSTER_TOKEN_PATH="${CLUSTER_PATH}/cluster_token.txt"
 
 SHARD_SCREEN_SESSIONS=()

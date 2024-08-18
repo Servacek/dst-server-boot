@@ -28,7 +28,7 @@ add_alias "wmods" "cd ${GAMEDIR}/ugc_mods/${CLUSTER_NAME}/Master/content/${GAMEI
 add_alias "mods" "cd ${GAMEDIR}/mods" "Change your pwd to the ${CLUSTER} server's mods directory."
 add_alias "sboot" "cd ${GAMEDIR}/boot" "Change your pwd to the ${CLUSTER} server's boot directory."
 add_alias "blogs" "sudo journalctl -u ${SERVICE}.service -f -q --line=50" "Shows the journal logs of the server's boot process, following new changes."
-add_alias "slogs" "if [[ -f server_log.txt ]]; then nano server_log.txt; else nano ${CLUSTER_PATH}/${CLUSTER}/${SHARDS[0]}/server_log.txt; fi" "Shows the logs from the server_log.txt file of shard directory or logs from the Master shard by default."
+add_alias "slogs" "if [[ -f server_log.txt ]]; then nano server_log.txt; else nano ${CLUSTER_PATH}/${SHARDS[0]}/server_log.txt; fi" "Shows the logs from the server_log.txt file of shard directory or logs from the Master shard by default."
 add_alias "screens" "sudo ls -laR /var/run/screen/" "Displays all active screen sessions on this machine. Useful for debugging."
 add_alias "ports" ' \
 for session in ${SHARD_SCREEN_SESSIONS[@]}; do \
@@ -59,7 +59,7 @@ done' "Displays the state and additional info of the shard screen sessions and s
 
 echo ""
 for SHARD in ${SHARDS[@]}; do
-    add_alias "${SHARD,,}" "cd ${CLUSTER_PATH}/${CLUSTER}/${SHARD}" "Change your pwd to the ${CLUSTER} server's ${SHARD} shard directory."
+    add_alias "${SHARD,,}" "cd ${CLUSTER_PATH}/${SHARD}" "Change your pwd to the ${CLUSTER} server's ${SHARD} shard directory."
     add_alias "c_${SHARD,,}" "screen -r ${SESSION_OWNER}/${SHARD_SESSION_PREFIX}${SHARD}" "Open the console for the ${SHARD} shard."
 done
 
@@ -71,4 +71,4 @@ add_alias "c_shutdown" "sudo systemctl stop ${SERVICE}.service" "The same effect
 echo ""
 echo "###############################################################"
 echo ""
-cd ${CLUSTER_PATH}/${CLUSTER}
+cd "${CLUSTER_PATH}"

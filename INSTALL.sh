@@ -38,7 +38,7 @@ apply_overrides() { # file, overrides
 . constants.sh
 
 while true; do
-    read -p "Are you happy with the configurations in ${CONFIG_FILE}? (y/n)" yn
+    read -p "Are you happy with the configurations in ${CONFIG_FILE}? [y/n] " yn
     case $yn in
         [Yy]* ) break;; # Continue
         [Nn]* ) nano ${CONFIG_FILE}; return;; # Exit program and open config file in edit mode
@@ -73,7 +73,7 @@ fi
 ####### CLUSTER TOKEN #######
 
 # Make sure the cluster folder structure exists so we have a place to put the token in.
-mkdir -p "${CLUSTER_PATH}/${CLUSTER}"
+mkdir -p "${CLUSTER_PATH}"
 
 if [[ ! -f "${CLUSTER_TOKEN_PATH}" ]]; then
     echo "No cluster token found in your ${CLUSTER_TOKEN_PATH}!"
