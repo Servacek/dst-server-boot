@@ -12,16 +12,14 @@ GuessMainPID=no
 # Since we do not have a MAIN process, this is actually irelevant.
 Restart=never
 # The user the screen sessions will run under.
-User=<MANAGING USER NAME>
-Group=<MANAGING GROUP NAME>
+User=steam
+Group=steam
 # This has to be set in order for proper reading of configuration files
 # with relative paths inside the run script.
-WorkingDirectory=<PATH TO YOUR BOOT DIRECTORY>
-ExecStart=<PATH TO YOUR BOOT DIRECTORY>/start.sh
-ExecReload=<PATH TO YOUR BOOT DIRECTORY>/reload.sh
-ExecStop=<PATH TO YOUR BOOT DIRECTORY>/stop.sh
-StandardOutput=journal+console
-StandardError=journal+console
+WorkingDirectory=~/.klei/DoNotStarveTogether/.game/boot
+ExecStart=/bin/bash -c "./start.sh"
+ExecReload=/bin/bash -c "./reload.sh"
+ExecStop=/bin/bash -c "./stop.sh"
 
 [Install]
 WantedBy=multi-user.target

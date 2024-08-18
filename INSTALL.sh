@@ -23,6 +23,15 @@ change_field () { # file, key, value
     sed -i "s|^${2}=.*|${2}=${3}|" "${1}"
 }
 
+apply_overrides() { # file, overrides
+    for i in "${!${2}[@]}"; do
+        KEY="${i}"
+        VALUE="${${2}[$i]}"
+
+        change_field "${1}" "${KEY}" "${VALUE}"
+    done
+}
+
 ####### CONFIGURATION #######
 
 # This will ensure that the ${CONFIG_FILE} actually exists.
@@ -89,20 +98,20 @@ declare -A SERVICE_OVERRIDES=(
     [WorkingDirectory]="${WORKING_DIRECTORY}"
 )
 
-# Iterate over the SERVICE_OVERRIDES and apply them to the local service file
-for i in "${!array[@]}"; do
-    KEY="${i}"
-    VALUE="${array[$i]}"
-
-    sed -i "s|^$KEY=.*|$KEY=$VALUE|" "$LOCAL_SERVICE_FILE_PATH"
-done
-
+apply_overrides "${LOCAL_SERVICE_FILE_PATH}" "${SERVICE_OVERRIDES}"
 safe_copy_file "${LOCAL_SERVICE_FILE_PATH}" "${SERVICE_FILE_PATH}"
 
 ####### PROFILE.D #######
 
 LOCAL_PROFILE_FILE_PATH="profile.d"
 PROFILE_FILE_PATH="/etc/profile.d/${SESSION_OWNER_GROUP}.sh"
+declare -A PROFILE_OVERRIDES=(
+    [GROUP_NAME]="${SESSION_OWNER_GROUP}"
+    [IGNORE_USERS]="${IGNORE_USERS[@]}"
+    [BOOT_DIRECTORY]="${WORKING_DIRECTORY}"
+)
+
+apply_overrides "${LOCAL_PROFILE_FILE_PATH}" "${PROFILE_OVERRIDES}"
 safe_copy_file "${LOCAL_PROFILE_FILE_PATH}" "${PROFILE_FILE_PATH}"
 
 . "${PROFILE_FILE_PATH}"

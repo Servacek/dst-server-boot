@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GROUP_NAME="czsk-admin"
+GROUP_NAME="steam"
 if ! $(groups $USER | grep -q "\b${GROUP_NAME}\b"); then
     return; # Ignore other users outside the group
 fi
@@ -10,7 +10,7 @@ exit() {
    echo "Profile.d script exited prematurely."
 }
 
-BOOT_DIRECTORY="/home/steam/.klei/DoNotStarveTogether/.game/boot"
+BOOT_DIRECTORY="~/.klei/DoNotStarveTogether/.game/boot"
 cd $BOOT_DIRECTORY
 source "${BOOT_DIRECTORY}/constants.sh"
 
@@ -28,7 +28,7 @@ add_alias "wmods" "cd ${GAMEDIR}/ugc_mods/${CLUSTER_NAME}/Master/content/${GAMEI
 add_alias "mods" "cd ${GAMEDIR}/mods" "Change your pwd to the ${CLUSTER} server's mods directory."
 add_alias "sboot" "cd ${GAMEDIR}/boot" "Change your pwd to the ${CLUSTER} server's boot directory."
 add_alias "blogs" "sudo journalctl -u ${SERVICE}.service -f -q --line=50" "Shows the journal logs of the server's boot process, following new changes."
-add_alias "slogs" "if [[ -f server_log.txt ]]; then tail server_log.txt -f --lines=50; else tail ${CLUSTER_PATH}/${CLUSTER}/${SHARDS[0]}/server_log.txt -f --lines=50; fi" "Shows the logs from the server_log.txt file of shard directory or logs from the Master shard by default."
+add_alias "slogs" "if [[ -f server_log.txt ]]; then nano server_log.txt; else nano ${CLUSTER_PATH}/${CLUSTER}/${SHARDS[0]}/server_log.txt; fi" "Shows the logs from the server_log.txt file of shard directory or logs from the Master shard by default."
 add_alias "screens" "sudo ls -laR /var/run/screen/" "Displays all active screen sessions on this machine. Useful for debugging."
 add_alias "ports" ' \
 for session in ${SHARD_SCREEN_SESSIONS[@]}; do \
@@ -36,7 +36,7 @@ for session in ${SHARD_SCREEN_SESSIONS[@]}; do \
     pid=$(_deepest="$screen_pid"; while [[ (! -z "$_deepest") && $(pgrep -P "$_deepest") ]]; do _deepest=$(pgrep -P "$_deepest"); done; echo "$_deepest"); \
     if [[ ! -z "$pid" ]]; then \
         echo "${session}:"; \
-        sudo netstat -tulnp | grep ${pid}; \
+        sudo netstat -tulnpa | grep ${pid}; \
         echo ""; \
     else \
         echo -e "$session:\t${RED}inactive${NC}"; \
@@ -64,10 +64,10 @@ for SHARD in ${SHARDS[@]}; do
 done
 
 echo ""
-add_alias "c_reload" "sudo touch ${LOG_FILE}; sudo systemctl reload ${SERVICE}.service & tail -n 0 -q --pid=$! -f ${LOG_FILE}" "The same effect as c_reload() in game but is being executed by systemctl itself."
-add_alias "c_reboot" "sudo touch ${LOG_FILE}; sudo systemctl restart ${SERVICE}.service & tail -n 0 -q --pid=$! -f ${LOG_FILE}" "The same effect as c_reboot() in game but is being executed by systemctl itself."
-add_alias "c_start" "sudo touch ${LOG_FILE}; sudo systemctl start ${SERVICE}.service & tail -n 0 -q --pid=$! -f ${LOG_FILE}" "Updates the game and starts the shards. The same as running \"systemctl start\" on the server's service."
-add_alias "c_shutdown" "sudo touch ${LOG_FILE};sudo systemctl stop ${SERVICE}.service & tail -n 0 -q --pid=$! -f ${LOG_FILE}" "The same effect as c_shutdown() in game but is being executed by systemctl itself."
+add_alias "c_reload" "sudo systemctl reload ${SERVICE}.service" "The same effect as c_reload() in game but is being executed by systemctl itself."
+add_alias "c_reboot" "sudo systemctl restart ${SERVICE}.service" "The same effect as c_reboot() in game but is being executed by systemctl itself."
+add_alias "c_start" "sudo systemctl start ${SERVICE}.service" "Updates the game and starts the shards. The same as running \"systemctl start\" on the server's service."
+add_alias "c_shutdown" "sudo systemctl stop ${SERVICE}.service" "The same effect as c_shutdown() in game but is being executed by systemctl itself."
 echo ""
 echo "###############################################################"
 echo ""

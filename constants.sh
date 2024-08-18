@@ -5,6 +5,8 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
+WORKING_DIRECTORY=$(dirname "$(realpath "$0")")
+
 DEFAULT_CONFIG_FILE="config/default_config.sh"
 CONFIG_FILE="config/config.sh"
 
@@ -33,6 +35,7 @@ echo "Configuration loaded."
 
 CONFIG_PATH="${PERSISTENT_STORAGE_ROOT}/${CONF_DIR}"
 CLUSTER_PATH="${CONFIG_PATH}/${CLUSTER_NAME}";
+CLUSTER_TOKEN_PATH="${CLUSTER_PATH}/cluster_token.txt"
 
 SHARD_SCREEN_SESSIONS=()
 for SHARD in ${SHARDS[@]}; do
@@ -40,6 +43,8 @@ for SHARD in ${SHARDS[@]}; do
 done
 
 MASTER_SCREEN_SESSION="${SHARD_SCREEN_SESSIONS[0]}"
+
+X32_MACHINE=$([ "$(uname -m)" = "i686" ] || [ "$(uname -m)" = "i386" ] && echo true || echo false)
 
 ###########################################
 

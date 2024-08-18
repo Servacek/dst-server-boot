@@ -137,6 +137,8 @@ DST_BIN="${GAMEDIR}/$(if [[ $X64 == true ]]; then echo "bin64"; else echo "bin";
 
 SHARD_SESSION_PREFIX="${GAMESERVERID}_${CLUSTER}_"
 SESSION_OWNER="steam"
+SESSION_OWNER_GROUP="${SESSION_OWNER}"
+IGNORE_USERS=() # List of users that should be ignore even though they are in the desired group.
 
 SERVICE="dstserver"
 DST_SERVER_PROCESS_NAME="dontstarve_dedi"
@@ -148,7 +150,5 @@ TIME_BETWEEN_SHARDS=10 # Seconds
 
 SHUTDOWN_COMMAND="c_shutdown(true)"
 RELOAD_COMMAND="c_reset()"
-
-LOG_FILE="${GAMEDIR}/boot/startup.log"
 
 #############################################
