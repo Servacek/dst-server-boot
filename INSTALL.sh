@@ -14,9 +14,11 @@ safe_copy_file() { # src, dst
     fi
 
     if [[ $COPYING == true ]]; then
-        echo "Copying ${1} to ${2}..."
-        sudo cp "${1}" "${2}"
+        echo "Copying ${1} to ${2}"
+        return sudo cp "${1}" "${2}" && return 0 || return 1
     fi
+
+    return 0
 }
 
 change_field () { # file, key, value
@@ -30,7 +32,7 @@ change_field () { # file, key, value
 
 apply_overrides() { # file, overrides
     echo "Applying field overrides to file ${1}"
-    array=("$@")
+    local -n array=$2
     for i in "${!array[@]}"; do
         KEY="${i}"
         VALUE="${array[$i]}"
@@ -108,23 +110,25 @@ declare -A SERVICE_OVERRIDES=(
     [WorkingDirectory]="${WORKING_DIRECTORY}"
 )
 
-apply_overrides "${LOCAL_SERVICE_FILE_PATH}" "${SERVICE_OVERRIDES}"
-safe_copy_file "${LOCAL_SERVICE_FILE_PATH}" "${SERVICE_FILE_PATH}"
-echo "File ${SERVICE_FILE_PATH} installed."
+apply_overrides "${LOCAL_SERVICE_FILE_PATH}" SERVICE_OVERRIDES
+if safe_copy_file "${LOCAL_SERVICE_FILE_PATH}" "${SERVICE_FILE_PATH}"; then
+    echo "Service file ${SERVICE_FILE_PATH} installed successfully."
+    echo "Reloading the systemd daemon..."
+    sudo systemctl daemon-reload
+fi
 
 ####### PROFILE.D #######
 
 LOCAL_PROFILE_FILE_PATH="profile.d"
 PROFILE_FILE_PATH="/etc/profile.d/${SESSION_OWNER_GROUP}.sh"
 declare -A PROFILE_OVERRIDES=(
-    [GROUP_NAME]="${SESSION_OWNER_GROUP}"
-    [IGNORE_USERS]="${IGNORE_USERS[@]}"
-    [BOOT_DIRECTORY]="${WORKING_DIRECTORY}"
+    [GROUP_NAME]="\""${SESSION_OWNER_GROUP}"\""
+    [IGNORE_USERS]="("${IGNORE_USERS[@]@Q}")"
+    [BOOT_DIRECTORY]="\""${WORKING_DIRECTORY}"\""
 )
 
-apply_overrides "${LOCAL_PROFILE_FILE_PATH}" "${PROFILE_OVERRIDES}"
+apply_overrides "${LOCAL_PROFILE_FILE_PATH}" PROFILE_OVERRIDES
 safe_copy_file "${LOCAL_PROFILE_FILE_PATH}" "${PROFILE_FILE_PATH}"
-echo "File ${PROFILE_FILE_PATH} installed."
 
 . "${PROFILE_FILE_PATH}"
 
