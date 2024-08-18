@@ -11,6 +11,10 @@ for SHARD_SCREEN_SESSION in $(screen -ls | grep -oP "\t\d+\.${SHARD_SCREEN_SESSI
     echo "Shutting down shard screen session ${SHARD_SCREEN_SESSION}...";
     screen -S "$SHARD_SCREEN_SESSION" -X stuff "${SHUTDOWN_COMMAND}^M";
     echo "Status: $?";
+
+    if [[ $? -eq 0 ]]; then
+        sleep 5 # Give the server some time to shutdown
+    fi
 done
 
 echo "All shard screen sessions should be shut down now."
