@@ -5,7 +5,7 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-WORKING_DIRECTORY=$(dirname "$(realpath "$0")")
+WORKING_DIRECTORY=$(dirname -- "${0}")
 
 DEFAULT_CONFIG_FILE="config/default_config.sh"
 CONFIG_FILE="config/config.sh"

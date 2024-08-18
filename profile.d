@@ -5,6 +5,13 @@ if ! $(groups $USER | grep -q "\b${GROUP_NAME}\b"); then
     return; # Ignore other users outside the group
 fi
 
+IGNORE_USERS=()
+for user in "${IGNORE_USERS[@]}"; do
+    if [[ $user == $USER ]]; then
+        return
+    fi
+done
+
 # Has to be defined before sourcing constants.sh
 exit() {
    echo "Profile.d script exited prematurely."

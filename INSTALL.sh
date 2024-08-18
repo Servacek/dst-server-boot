@@ -20,13 +20,16 @@ safe_copy_file() { # src, dst
 }
 
 change_field () { # file, key, value
+    echo "Overriding field ${2} to ${3}..."
     sed -i "s|^${2}=.*|${2}=${3}|" "${1}"
 }
 
 apply_overrides() { # file, overrides
-    for i in "${!${2}[@]}"; do
+    echo "Applying field overrides to file ${1}"
+    array=("$@")
+    for i in "${!array[@]}"; do
         KEY="${i}"
-        VALUE="${${2}[$i]}"
+        VALUE="${array[$i]}"
 
         change_field "${1}" "${KEY}" "${VALUE}"
     done
@@ -86,7 +89,7 @@ if [[ ! -f "${CLUSTER_TOKEN_PATH}" ]]; then
             echo "Cluster token saved to ${CLUSTER_TOKEN_PATH}"
             break
         else
-            echo "Invalid token. Please try again."
+            echo -e "${RED}Invalid token. Please try again.${NC}"
         fi
     done
 fi
@@ -121,5 +124,5 @@ safe_copy_file "${LOCAL_PROFILE_FILE_PATH}" "${PROFILE_FILE_PATH}"
 
 ####### DONE! #######
 
-echo "Booting scripts successfully installed!"
+echo -e "${GREEN}Booting scripts successfully installed!${NC}"
 echo "You can now start the server using the c_start command!"
