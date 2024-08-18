@@ -23,8 +23,6 @@ Linux shell script for booting up and updating a DST Dedicated server with advan
 ## Notes
 - Tested only on Debian 5.10.149-2 x86_64
 
-![image](https://github.com/user-attachments/assets/06f0a6a1-ec9f-4ad1-aae0-4c50fa20843e)
-
 ## References
 - https://www.freedesktop.org/software/systemd/man/latest/systemd.exec.html
 - https://www.gnu.org/software/screen/manual/html_node/index.html#SEC_Contents
