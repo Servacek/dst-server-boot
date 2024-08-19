@@ -84,7 +84,7 @@ for i in ${!SHARDS[@]}; do
             $(if [[ -n "'"${MONITOR_PARENT_PROCESS}"'" ]]; then echo "-monitor_parent_process '"${MONITOR_PARENT_PROCESS}"'"; fi) \
             $(if [[ "'"${OFFLINE}"'" == true ]]; then echo "-offline"; fi) \
             $(if [[ "'"${DISABLEDATACOLLECTION}"'" == true ]]; then echo "-disabledatacollection"; fi) \
-            $(if [[ "'"${CLOUDSERVER}"'" == true && '"$i"' == '"$MASTER_SHARD_i"' ]]; then echo "-cloudserver"; fi)
+            $(if [[ "'"${CLOUDSERVER}"'" == true && '"$i"' == '"$MASTER_SHARD_INDEX"' ]]; then echo "-cloudserver"; fi)
         ); do
             echo -e "'"${RED}"'[Error] Looks like the server has crashed! Restarting in '"${TIME_UNTIL_AUTO_RESTART}"' seconds...'"${NC}"'";
             sleep '"${TIME_UNTIL_AUTO_RESTART}"';

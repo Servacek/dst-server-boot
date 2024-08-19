@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Values that are not overridable in cluster.ini or server.ini have their default values here.
 
 ################## COMMAND LINE OPTIONS #################
@@ -183,8 +185,7 @@ ADD_ALIASES_TO_SUDOERS=true
 # See: https://crontab.guru/every-day-8am
 CRON_TASK_SCHEDULES=("0 6 * * *") # Every day at 6am
 # Commands to run on the specific schedules above (indexes match)
-# This HAS to be an oneliner according to the manual.
-CRON_TASK_COMMANDS=("chdir ${SCRIPT_DIRECTORY}; . tasks/maintenance.sh") # Example
+CRON_TASK_COMMANDS=(". tasks/maintenance.sh > tasks/maintenance.log 2>&1") # Example
 CRON_ENABLE=false
 
 #############################################
