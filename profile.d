@@ -35,6 +35,7 @@ else
 fi
 echo -n "Version: "
 cat "${VERSION_PATH}"
+echo ""
 echo -e "${BOLD}NOTES"
 echo -e "\tTo use"
 echo ""
@@ -50,7 +51,7 @@ add_alias() {
 }
 
 add_alias "wmods" "cd ${GAMEDIR}/ugc_mods/${CLUSTER}/Master/content/${GAMEID}" "Change your pwd to the ${CLUSTER} server's ugc_mods directory storing newer workshop mods."
-add_alias "mods" "cd ${GAMEDIR}/mods" "Change your pwd to the ${CLUSTER} server's mods directory."
+add_alias "imods" "nano ${MODS_SETUP_FILE_PATH}" "Opens the appropriate \"dedicated_server_mods_setup.lua\" in edit mode."
 add_alias "sboot" "cd ${GAMEDIR}/boot" "Change your pwd to the ${CLUSTER} server's boot directory."
 add_alias "blogs" "sudo journalctl -u ${SERVICE}.service -f -q --line=50" "Shows the journal logs of the server's boot process, following new changes."
 add_alias "slogs" "if [[ -f server_log.txt ]]; then nano server_log.txt; else nano ${CLUSTER_PATH}/${SHARDS[0]}/server_log.txt; fi" "Shows the logs from the server_log.txt file of shard directory or logs from the Master shard by default."
@@ -93,13 +94,17 @@ add_alias "c_reload" "sudo systemctl reload ${SERVICE}.service" "The same effect
 add_alias "c_reboot" "sudo systemctl restart ${SERVICE}.service" "The same effect as c_reboot() in game but is being executed by systemctl itself."
 add_alias "c_start" "sudo systemctl start ${SERVICE}.service" "Updates the game and starts the shards. The same as running \"systemctl start\" on the server's service."
 add_alias "c_shutdown" "sudo systemctl stop ${SERVICE}.service" "The same effect as c_shutdown() in game but is being executed by systemctl itself."
-echo ""
-echo "###############################################################"
-echo ""
+
+# Ensure the alias is recognized in the current shell
+shopt -s expand_aliases
 
 # We do not want to have a password prompt at login
 if [[ $ADD_ALIASES_TO_SUDOERS == true ]]; then
     sudo status
 fi
+
+echo ""
+#echo "###############################################################"
+echo ""
 
 cd "${CLUSTER_PATH}"

@@ -153,6 +153,7 @@ echo "" > "${SUDOERS_FILE_PATH}"
 for alias in "${ALIASES[@]}"; do
     echo "%${SESSION_OWNER_GROUP} ALL=NOPASSWD: ${alias}" >> "${SUDOERS_FILE_PATH}"
     echo "${SESSION_OWNER} ALL=NOPASSWD: ${alias}" >> "${SUDOERS_FILE_PATH}"
+done
 
 safe_copy_file "${LOCAL_SUDOERS_FILE_PATH}/${SUDOERS_FILE_NAME}" "${SUDOERS_FILE_PATH}"
 
