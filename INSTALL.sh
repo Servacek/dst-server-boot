@@ -172,10 +172,10 @@ for i in ${!CRON_TASK_SCHEDULES[@]}; do
         continue # Schedule exists but doesn't have an associated command.
     fi
 
-    echo "${TASK_SCHEDULE} ${TASK_COMMAND}" >> "${CRON_FILE_PATH}"
+    echo "${TASK_SCHEDULE} ${TASK_COMMAND}" >> "${LOCAL_CRON_FILE_PATH}"
 done
 
-safe_copy_file "${LOCAL_CRON_FILE_PATH}/${CRON_FILE_NAME}" "${CRON_FILE_PATH}"
+safe_copy_file "${LOCAL_CRON_FILE_PATH}" "${CRON_FILE_PATH}"
 
 fi
 
