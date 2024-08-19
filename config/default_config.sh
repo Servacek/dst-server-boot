@@ -181,9 +181,15 @@ ADD_ALIASES_TO_SUDOERS=true
 
 # An array of crontab compatible schedule expressions
 # See: https://crontab.guru/every-day-8am
-CRON_TASK_SCHEDULES=("0 8 * * *") # Every day at 8am
+CRON_TASK_SCHEDULES=("0 6 * * *") # Every day at 6am
 # Commands to run on the specific schedules above (indexes match)
-CRON_TASK_COMMANDS=("screen -S ${SHARD_SESSION_PREFIX}${SHARDS[${MASTER_SHARD_INDEX}}]} -X stuff 'c_announce(\"The server will be automatically restarted in 1 minute for regular maintenance.\")^M'; sleep 60; sudo systemctl restart ${SERVICE}.service") # Simple maintance reboot of the server with a warning.
+CRON_TASK_COMMANDS=("
+    screen -S ${SHARD_SESSION_PREFIX}${SHARDS[${MASTER_SHARD_INDEX}]} -X stuff 'c_announce(\"The server will be automatically restarted in 1 minute for regular maintenance.\")^M'; \
+    sleep 57; \
+    screen -S ${SHARD_SESSION_PREFIX}${SHARDS[${MASTER_SHARD_INDEX}]} -X stuff 'c_announce(\"Restarting the server...\")^M'; \
+    sleep 3;
+    sudo systemctl restart ${SERVICE}.service
+") # Simple maintance reboot of the server with a warning.
 CRON_ENABLE=false
 
 #############################################
