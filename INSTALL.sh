@@ -149,7 +149,7 @@ if [[ $ADD_ALIASES_TO_SUDOERS == true ]]; then
 LOCAL_SUDOERS_FILE_PATH="sudoers.d"
 SUDOERS_FILE_PATH="/etc/sudoers.d/${SESSION_OWNER_GROUP}"
 
-echo "" > "${SUDOERS_FILE_PATH}"
+echo "" > "${LOCAL_SUDOERS_FILE_PATH}"
 for alias in "${ALIASES[@]}"; do
     echo "%${SESSION_OWNER_GROUP} ALL=NOPASSWD: ${alias}" >> "${LOCAL_SUDOERS_FILE_PATH}"
     echo "${SESSION_OWNER} ALL=NOPASSWD: ${alias}" >> "${LOCAL_SUDOERS_FILE_PATH}"

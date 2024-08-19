@@ -33,9 +33,9 @@ if [[ -s "${BANNER_PATH}" ]]; then
 else
     echo "######################### ${CLUSTER} SERVER #########################"
 fi
-echo -n "Version: "
+echo -n "  Version: "
 cat "${VERSION_PATH}"
-echo ""
+echo -e "\n"
 echo -e "${BOLD}NOTES"
 echo -e "\tTo use"
 echo ""
@@ -65,7 +65,7 @@ for session in ${SHARD_SCREEN_SESSIONS[@]}; do \
         sudo netstat -tulnp | grep ${pid}; \
         echo ""; \
     else \
-        echo -e "$session:\t${RED}inactive${NC}"; \
+        echo -e "\t${BOLD}$session${NC}\t${UNDERLINE}State${NC} ${RED}inactive${NC}"; \
     fi; \
 done' "Displays the ports currently used by the server shard process(es)."
 add_alias "status" ' \
@@ -74,12 +74,12 @@ for session in ${SHARD_SCREEN_SESSIONS[@]}; do \
     pid=$(_deepest="$screen_pid"; while [[ (! -z "$_deepest") && $(pgrep -P "$_deepest") ]]; do _deepest=$(pgrep -P "$_deepest"); done; echo "$_deepest"); \
     pname=$(if [[ ! -z "$pid" ]]; then echo $(ps -p "$pid" -o comm=); fi); \
     if [[ "$pname" != "$DST_SERVER_PROCESS_NAME" ]]; then \
-        echo -e "$session:\t${RED}inactive${NC}"; \
+        echo -e "\t${BOLD}$session${NC}\t${UNDERLINE}State${NC} ${RED}inactive${NC}"; \
     else \
         cpu_affinity=$(taskset -pc "$pid" 2>/dev/null | sed -n "s/.*: \(.*\)/\1/p"); \
         cpu_usage=$(ps -p $pid -o %cpu --no-headers); \
         mem_usage=$(ps -p $pid -o %mem --no-headers); \
-        echo -e "$session:\t${GREEN}active${NC},\tCPU core(s): $cpu_affinity,\tCPU usage: $cpu_usage%,\tMemory usage: $mem_usage%\tPID: $pid"; \
+        echo -e "\t${BOLD}$session${NC}\n\t\t${UNDERLINE}State${NC} ${GREEN}active${NC}\t${UNDERLINE}CPU core(s)${NC} $cpu_affinity\t${UNDERLINE}CPU usage${NC} $cpu_usage%\t${UNDERLINE}Memory usage${NC} $mem_usage%\t${UNDERLINE}PID${NC} $pid"; \
     fi; \
 done' "Displays the state and additional info of the shard screen sessions and server processes for the ${CLUSTER} cluster."
 
@@ -100,6 +100,7 @@ shopt -s expand_aliases
 
 # We do not want to have a password prompt at login
 if [[ $ADD_ALIASES_TO_SUDOERS == true ]]; then
+    echo -e "\n${BOLD}SERVER STATUS${NC}"
     status
 fi
 
