@@ -3,9 +3,18 @@
 ### COLORS
 GREEN='\033[0;32m'
 RED='\033[0;31m'
+ORANGE='\033[0;33m'
+
+BOLD='\033[1m'
+UNDERLINE='\033[4m'
 NC='\033[0m' # No Color
 
-SCRIPT_DIRECTORY=$(dirname $(realpath "${0}"))
+if [ -n "$BASH_SOURCE" ]; then
+    SCRIPT_DIRECTORY=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
+else
+    # Fallback for other shells, assuming it's sourced from its directory
+    SCRIPT_DIRECTORY=$(dirname "$(realpath "${0}")")
+fi
 PWD=$(pwd)
 
 DEFAULT_CONFIG_FILE="config/default_config.sh"
@@ -46,6 +55,10 @@ done
 MASTER_SCREEN_SESSION="${SHARD_SCREEN_SESSIONS[0]}"
 
 X32_MACHINE=$([ "$(uname -m)" = "i686" ] || [ "$(uname -m)" = "i386" ] && echo true || echo false)
+
+# If empty, the banner will not be applied.
+BANNER_PATH="${SCRIPT_DIRECTORY}/banner.txt"
+VERSION_PATH="${SCRIPT_DIRECTORY}/version.txt"
 
 ###########################################
 

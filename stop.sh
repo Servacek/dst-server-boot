@@ -13,7 +13,9 @@ for SHARD_SCREEN_SESSION in $(screen -ls | grep -oP "\t\d+\.${SHARD_SCREEN_SESSI
     echo "Status: $?";
 
     if [[ $? -eq 0 ]]; then
-        sleep 5 # Give the server some time to shutdown
+        # Give the server some time to shutdown
+        # After this file is executed, systemctl will just kill all the child processes left.
+        sleep "${SHUTDOWN_TIMEOUT}";
     fi
 done
 

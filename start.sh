@@ -55,15 +55,15 @@ else
 fi
 
 echo "Starting up the shards..."
-for INDEX in ${!SHARDS[@]}; do
-    SHARD_NAME=${SHARDS[$INDEX]} # Should always have an value, since names are required.
-    SESSION=${SHARD_SESSION_PREFIX}${SHARDS[$INDEX]}
+for i in ${!SHARDS[@]}; do
+    SHARD_NAME=${SHARDS[$i]} # Should always have an value, since names are required.
+    SESSION=${SHARD_SESSION_PREFIX}${SHARDS[$i]}
 
     # Optional
-    CPU_CORE=${CPUCORES[$INDEX]}
-    PORT=${PORTS[$INDEX]}
-    STEAM_MASTER_SERVER_PORT=${STEAM_MASTER_SERVER_PORTS[$INDEX]}
-    STEAM_AUTHENTICATION_PORT=${STEAM_AUTHENTICATION_PORTS[$INDEX]}
+    CPU_CORE=${CPUCORES[$i]}
+    PORT=${PORTS[$i]}
+    STEAM_MASTER_SERVER_PORT=${STEAM_MASTER_SERVER_PORTS[$i]}
+    STEAM_AUTHENTICATION_PORT=${STEAM_AUTHENTICATION_PORTS[$i]}
 
     echo "Starting shard ${SHARD_NAME}..."
     taskset -c $(if [[ -n "$CPU_CORE" ]]; then echo "$CPU_CORE"; else echo "0-$(($(nproc)-1))"; fi) \
@@ -84,13 +84,13 @@ for INDEX in ${!SHARDS[@]}; do
             $(if [[ -n "'"${MONITOR_PARENT_PROCESS}"'" ]]; then echo "-monitor_parent_process '"${MONITOR_PARENT_PROCESS}"'"; fi) \
             $(if [[ "'"${OFFLINE}"'" == true ]]; then echo "-offline"; fi) \
             $(if [[ "'"${DISABLEDATACOLLECTION}"'" == true ]]; then echo "-disabledatacollection"; fi) \
-            $(if [[ "'"${CLOUDSERVER}"'" == true && '"$INDEX"' == '"$MASTER_SHARD_INDEX"' ]]; then echo "-cloudserver"; fi)
+            $(if [[ "'"${CLOUDSERVER}"'" == true && '"$i"' == '"$MASTER_SHARD_i"' ]]; then echo "-cloudserver"; fi)
         ); do
             echo -e "'"${RED}"'[Error] Looks like the server has crashed! Restarting in '"${TIME_UNTIL_AUTO_RESTART}"' seconds...'"${NC}"'";
             sleep '"${TIME_UNTIL_AUTO_RESTART}"';
         done'
 
-    if screen_exists "${SHARD_SCREEN_SESSIONS[$INDEX]}"; then
+    if screen_exists "${SHARD_SCREEN_SESSIONS[$i]}"; then
         echo -e "${GREEN}Process for shard ${SHARD_NAME} has successfully started!${NC}"
     else
         echo -e "${RED}[Error] Failed to start ${SHARD_NAME}! Status: $?${NC}"

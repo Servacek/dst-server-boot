@@ -17,18 +17,36 @@ exit() {
    echo "Profile.d script exited prematurely."
 }
 
+echo ""
 BOOT_DIRECTORY="~/.klei/DoNotStarveTogether/.game/boot"
 cd $BOOT_DIRECTORY
 source "${BOOT_DIRECTORY}/constants.sh"
 
-echo "######################### ${CLUSTER} SERVER #########################"
+if [[ $OVERRIDE_DEFAULT_MOTD == true]]; then
+    clear
+else
+    echo ""
+fi
+
+if [[ -s "${BANNER_PATH}" ]]; then
+    cat "${BANNER_PATH}"
+else
+    echo "######################### ${CLUSTER} SERVER #########################"
+fi
+echo -n "Version: "
+cat "${VERSION_PATH}"
+echo -e "${BOLD}NOTES"
+echo -e "\tTo use"
 echo ""
-echo "AVAILABLE ALIASES"
+echo -e "${BOLD}CUSTOM COMMAND LINE OPTIONS"
+
+ALIASES=()
 
 # A wrapper around the built-in "alias" command.
 add_alias() {
     alias ${1}="${2}"
-    echo -e "   - ${1}\t-> ${3}"
+    ALIASES+=(${1})
+    echo -e "   ${BOLD}${1}${NC}\t ${3}"
 }
 
 add_alias "wmods" "cd ${GAMEDIR}/ugc_mods/${CLUSTER}/Master/content/${GAMEID}" "Change your pwd to the ${CLUSTER} server's ugc_mods directory storing newer workshop mods."
@@ -78,4 +96,10 @@ add_alias "c_shutdown" "sudo systemctl stop ${SERVICE}.service" "The same effect
 echo ""
 echo "###############################################################"
 echo ""
+
+# We do not want to have a password prompt at login
+if [[ $ADD_ALIASES_TO_SUDOERS == true ]]; then
+    sudo status
+fi
+
 cd "${CLUSTER_PATH}"

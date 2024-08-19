@@ -58,6 +58,8 @@ done
 ####### DEPENDENCIES #######
 # https://forums.kleientertainment.com/forums/topic/64441-dedicated-server-quick-setup-guide-linux/
 
+if [[ $ENSURE_DEPENDENCIES == true ]]; then
+
 echo "Installing dependencies..."
 
 if [[ $X32_MACHINE == true ]]; then
@@ -77,6 +79,8 @@ if [[ ! -d "${STEAMCMD}" && ! -f "${STEAMCMD}" ]]; then
     tar -xvzf steamcmd_linux.tar.gz
 
     STEAMCMD="${STEAMCMD}/steamcmd.sh"
+fi
+
 fi
 
 ####### CLUSTER TOKEN #######
@@ -101,6 +105,7 @@ if [[ ! -f "${CLUSTER_TOKEN_PATH}" ]]; then
 fi
 
 ####### SYSTEMD SERVICE #######
+# Service is required to be created since many things rely on this fact.
 
 SERVICE_FILE_PATH="/etc/systemd/system/${SERVICE}.service"
 LOCAL_SERVICE_FILE_PATH="dstserver.service"
@@ -115,9 +120,12 @@ if safe_copy_file "${LOCAL_SERVICE_FILE_PATH}" "${SERVICE_FILE_PATH}"; then
     echo "Service file ${SERVICE_FILE_PATH} installed successfully."
     echo "Reloading the systemd daemon..."
     sudo systemctl daemon-reload
+    sudo systemctl enable "${SERVICE}" # Make sure the service will be automatically started on boot.
 fi
 
 ####### PROFILE.D #######
+
+if [[ $ADD_ALIASES == true ]]; then
 
 LOCAL_PROFILE_FILE_PATH="profile.d"
 PROFILE_FILE_PATH="/etc/profile.d/${SESSION_OWNER_GROUP}.sh"
@@ -131,6 +139,45 @@ apply_overrides "${LOCAL_PROFILE_FILE_PATH}" PROFILE_OVERRIDES
 safe_copy_file "${LOCAL_PROFILE_FILE_PATH}" "${PROFILE_FILE_PATH}"
 
 . "${PROFILE_FILE_PATH}"
+
+fi
+
+####### SUDOERS.D #######
+
+if [[ $ADD_ALIASES_TO_SUDOERS == true ]]; then
+
+LOCAL_SUDOERS_FILE_PATH="sudoers.d"
+SUDOERS_FILE_PATH="/etc/sudoers.d/${SESSION_OWNER_GROUP}"
+
+echo "" > "${SUDOERS_FILE_PATH}"
+for alias in "${ALIASES[@]}"; do
+    echo "%${SESSION_OWNER_GROUP} ALL=NOPASSWD: ${alias}" >> "${SUDOERS_FILE_PATH}"
+    echo "${SESSION_OWNER} ALL=NOPASSWD: ${alias}" >> "${SUDOERS_FILE_PATH}"
+
+safe_copy_file "${LOCAL_SUDOERS_FILE_PATH}/${SUDOERS_FILE_NAME}" "${SUDOERS_FILE_PATH}"
+
+fi
+
+####### CRON.D #######
+
+if [[ $CRON_ENABLE == true ]]; then
+
+LOCAL_CRON_FILE_PATH="cron.d"
+CRON_FILE_PATH="/etc/cron.d/${SERVICE}" # Naming after the service since that's what it will manage
+
+for i in ${!CRON_TASK_SCHEDULES[@]}; do
+    TASK_SCHEDULE=${CRON_TASK_SCHEDULES[$i]} # Value guaranteed to exist.
+    TASK_COMMAND=${CRON_TASK_COMMANDS[$i]}
+    if [[ -z $TASK_COMMAND ]]; then
+        continue # Schedule exists but doesn't have an associated command.
+    fi
+
+    echo "${TASK_SCHEDULE} ${TASK_COMMAND}" >> "${CRON_FILE_PATH}"
+done
+
+safe_copy_file "${LOCAL_CRON_FILE_PATH}/${CRON_FILE_NAME}" "${CRON_FILE_PATH}"
+
+fi
 
 ####### DONE! #######
 

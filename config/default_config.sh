@@ -123,32 +123,67 @@ STEAM_MASTER_SERVER_PORTS=()
 ################## CONFIGURATION #################
 
 VALIDATE=true;
+X64=true;
 GAMESERVERID=343050
 GAMEID=322330;
-STEAMCMD="/usr/games/steamcmd";
-LOGIN="anonymous";
-# Directory where you Don't Starve Together Dedicated Server lives
-# This is by default in your STEAMCMD directory.
-GAMEDIR="${STEAMCMD}/steamapps/common/Don't Starve Together Dedicated Server";
-MODS_SETUP_FILE_PATH="${GAMEDIR}/mods/dedicated_server_mods_setup.lua";
-MODS_SETUP_FILE_BACKUP_PATH="${MODS_SETUP_FILE_PATH}.bak";
-X64=true;
-DST_BIN="${GAMEDIR}/$(if [[ $X64 == true ]]; then echo "bin64"; else echo "bin"; fi)/dontstarve_dedicated_server_nullrenderer$(if [[ $X64 == true ]]; then echo "_x64"; fi)"
-
-SHARD_SESSION_PREFIX="${GAMESERVERID}_${CLUSTER}_"
+# The user allowed to manage the server.
+# Or the user this server should run as.
 SESSION_OWNER="steam"
+# The group of users allowed to manage the server.
 SESSION_OWNER_GROUP="${SESSION_OWNER}"
 IGNORE_USERS=() # List of users that should be ignore even though they are in the desired group.
 
+# The name of the service for this server that should be created and used
+# for managing the server's processes.
 SERVICE="dstserver"
+
+# Directory where you Don't Starve Together Dedicated Server lives
+# This is by default in your STEAMCMD directory.
+GAMEDIR="${STEAMCMD}/steamapps/common/Don't Starve Together Dedicated Server";
+
+#########
+# you shouldn't have to modify these
+
+STEAMCMD="/usr/games/steamcmd";
+LOGIN="anonymous";
+MODS_SETUP_FILE_PATH="${GAMEDIR}/mods/dedicated_server_mods_setup.lua";
+MODS_SETUP_FILE_BACKUP_PATH="${MODS_SETUP_FILE_PATH}.bak";;
+DST_BIN="${GAMEDIR}/$(if [[ $X64 == true ]]; then echo "bin64"; else echo "bin"; fi)/dontstarve_dedicated_server_nullrenderer$(if [[ $X64 == true ]]; then echo "_x64"; fi)"
+
+# Special prefix for the screen sessions.
+SHARD_SESSION_PREFIX="${GAMESERVERID}_${CLUSTER}_"
+IGNORE_USERS=() # List of users that should be ignore even though they are in the desired group.
+
 DST_SERVER_PROCESS_NAME="dontstarve_dedi"
 
+# Configuration for the shard arrays.
 MASTER_SHARD_INDEX=0
 
-TIME_UNTIL_AUTO_RESTART=60 # Seconds
+TIME_UNTIL_AUTO_RESTART=60 # Seconds to wait after the server exists with a non-zero status
 TIME_BETWEEN_SHARDS=10 # Seconds
+SHUTDOWN_TIMEOUT=5 # Seconds to wait for the server to shutdown before killing the process
 
+# Commands used in reload.sh and stop.sh
 SHUTDOWN_COMMAND="c_shutdown(true)"
 RELOAD_COMMAND="c_reset()"
+
+ADD_ALIASES=true
+ENSURE_DEPENDENCIES=true
+
+OVERRIDE_DEFAULT_MOTD=true
+
+# Add alias commands to a sudoers file so you do not have to provide
+# a password when running "sudo ${alias}" as a user of the ${SESSION_OWNER_GROUP} group
+# or the user ${SESSION_OWNER}.
+ADD_ALIASES_TO_SUDOERS=true
+
+################## CRON TASKS ###############
+
+# An array of crontab compatible schedule expressions
+# See: https://crontab.guru/every-day-8am
+CRON_TASK_SCHEDULES=("0 8 * * *") # Every day at 8am
+# Commands to run on the specific schedules above (indexes match)
+CRON_TASK_COMMANDS=("screen -S ${SHARD_SESSION_PREFIX}${SHARDS[${MASTER_SHARD_INDEX}}]} -X stuff 'c_announce(\"The server will be automatically restarted in 1 minute for regular maintenance.\")^M'; sleep 60; sudo systemctl restart ${SERVICE}.service") # Simple maintance reboot of the server with a warning.
+CRON_ENABLE=false
 
 #############################################
