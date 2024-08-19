@@ -18,7 +18,7 @@ safe_copy_file() { # src, dst
         return $(sudo cp "${1}" "${2}")
     fi
 
-    return 0
+    return 1
 }
 
 change_field () { # file, key, value

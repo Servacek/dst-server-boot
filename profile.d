@@ -22,7 +22,7 @@ BOOT_DIRECTORY="~/.klei/DoNotStarveTogether/.game/boot"
 cd $BOOT_DIRECTORY
 source "${BOOT_DIRECTORY}/constants.sh"
 
-if [[ $OVERRIDE_DEFAULT_MOTD == true]]; then
+if [[ $OVERRIDE_DEFAULT_MOTD == true ]]; then
     clear
 else
     echo ""
