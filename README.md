@@ -1,7 +1,7 @@
 # Don't Starve Together Server Boot Script
 Linux shell script for booting up and updating a DST Dedicated server with advanced options and easy configuration.
 
-![image](https://github.com/user-attachments/assets/de891453-18e3-405a-88bb-9b444c775b87)
+![image](https://github.com/user-attachments/assets/366580b1-11da-4879-ad57-0caab8cfb3d4)
 
 ## General Dependencies
 - Linux
@@ -13,10 +13,12 @@ Linux shell script for booting up and updating a DST Dedicated server with advan
 3. Run the `INSTALL.sh` file inside the newly downloaded directory and follow the instructions there.
 
 ## Features
-- Centralized configuration from `config.sh`
+- Centralized configuration from `config.sh`.
 - Custom command aliases for selected group of users for easier management of the server.
 - Ability to select specific core or core range for each of the cluster's shards.
 - Updating of the game's files on boot and file validation without overriding the `dedicated_server_mods_setup.lua` file.
+- Automatic adding of crontab jobs and sudoers rules any many more configurations were automatized!
+- Restarting on-failure per shard process.
 
 ![image](https://github.com/user-attachments/assets/06f0a6a1-ec9f-4ad1-aae0-4c50fa20843e)
 
