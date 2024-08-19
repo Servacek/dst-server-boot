@@ -5,7 +5,7 @@ if ! $(groups $USER | grep -q "\b${GROUP_NAME}\b"); then
     return; # Ignore other users outside the group
 fi
 
-IGNORE_USERS=()
+IGNORE_USERS=('steam')
 for user in "${IGNORE_USERS[@]}"; do
     if [[ $user == $USER ]]; then
         return
@@ -18,7 +18,7 @@ exit() {
 }
 
 echo ""
-BOOT_DIRECTORY="~/.klei/DoNotStarveTogether/.game"
+BOOT_DIRECTORY="/home/steam/.klei/DoNotStarveTogether/.game/boot"
 PADDING="    "
 cd $BOOT_DIRECTORY
 source "${BOOT_DIRECTORY}/constants.sh"
@@ -52,7 +52,7 @@ ALIASES=()
 add_alias() { # alias_name, command, description, add_to_sudoers
     alias ${1}="${2}"
     if [[ ${4} == true ]]; then
-        ALIASES+=("${3}")
+        ALIASES+=("${2}")
     fi
 
     echo -e "${PADDING}${BOLD}${1}${NC}\t${3}"
@@ -87,21 +87,21 @@ for session in ${SHARD_SCREEN_SESSIONS[@]}; do \
         cpu_affinity=$(taskset -pc "$pid" 2>/dev/null | sed -n "s/.*: \(.*\)/\1/p"); \
         cpu_usage=$(ps -p $pid -o %cpu --no-headers); \
         mem_usage=$(ps -p $pid -o %mem --no-headers); \
-        echo -e "${PADDING}${BOLD}$session${NC}\n\t\t\t${UNDERLINE}State${NC} ${GREEN}active${NC}\t${UNDERLINE}CPU core(s)${NC} $cpu_affinity\t${UNDERLINE}CPU usage${NC} $cpu_usage%\t${UNDERLINE}Memory usage${NC} $mem_usage%\t${UNDERLINE}PID${NC} $pid"; \
+        echo -e "${PADDING}${BOLD}$session${NC}\n\t\t${UNDERLINE}State${NC} ${GREEN}active${NC}\t${UNDERLINE}CPU core(s)${NC} $cpu_affinity\t${UNDERLINE}CPU usage${NC} $cpu_usage%\t${UNDERLINE}Memory usage${NC} $mem_usage%\t${UNDERLINE}PID${NC} $pid"; \
     fi; \
 done' "Displays the state and additional info of the shard screen sessions and server processes for the ${CLUSTER} cluster."
 
 echo ""
 for SHARD in ${SHARDS[@]}; do
     add_alias "${SHARD,,}" "cd ${CLUSTER_PATH}/${SHARD}" "Change your pwd to the ${CLUSTER} server's ${SHARD} shard directory."
-    add_alias "c_${SHARD,,}" "screen -r ${SESSION_OWNER}/${SHARD_SESSION_PREFIX}${SHARD}" "Open the console for the ${SHARD} shard." true
+    add_alias "c_${SHARD,,}" "screen -r ${SESSION_OWNER}/${SHARD_SESSION_PREFIX}${SHARD}" "Open the console for the ${SHARD} shard."
 done
 
 echo ""
-add_alias "c_reload" "sudo systemctl reload ${SERVICE}.service" "The same effect as c_reload() in game but is being executed by systemctl itself." true
-add_alias "c_reboot" "sudo systemctl restart ${SERVICE}.service" "The same effect as c_reboot() in game but is being executed by systemctl itself." true
-add_alias "c_start" "sudo systemctl start ${SERVICE}.service" "Updates the game and starts the shards. The same as running \"systemctl start\" on the server's service." true
-add_alias "c_shutdown" "sudo systemctl stop ${SERVICE}.service" "The same effect as c_shutdown() in game but is being executed by systemctl itself." true
+add_alias "c_reload" "sudo /bin/systemctl reload ${SERVICE}.service" "The same effect as c_reload() in game but is being executed by systemctl itself." true
+add_alias "c_reboot" "sudo /bin/systemctl restart ${SERVICE}.service" "The same effect as c_reboot() in game but is being executed by systemctl itself." true
+add_alias "c_start" "sudo /bin/systemctl start ${SERVICE}.service" "Updates the game and starts the shards. The same as running \"systemctl start\" on the server's service." true
+add_alias "c_shutdown" "sudo /bin/systemctl stop ${SERVICE}.service" "The same effect as c_shutdown() in game but is being executed by systemctl itself." true
 
 # Ensure the alias is recognized in the current shell
 shopt -s expand_aliases

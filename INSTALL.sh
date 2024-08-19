@@ -151,6 +151,7 @@ SUDOERS_FILE_PATH="/etc/sudoers.d/${SESSION_OWNER_GROUP}"
 
 echo "" > "${LOCAL_SUDOERS_FILE_PATH}"
 for alias in "${ALIASES[@]}"; do
+    alias=$(echo "${alias}" | sed 's/^sudo //')
     echo "%${SESSION_OWNER_GROUP} ALL=NOPASSWD: ${alias}" >> "${LOCAL_SUDOERS_FILE_PATH}"
     echo "${SESSION_OWNER} ALL=NOPASSWD: ${alias}" >> "${LOCAL_SUDOERS_FILE_PATH}"
 done
@@ -166,6 +167,7 @@ if [[ $CRON_ENABLE == true ]]; then
 LOCAL_CRON_FILE_PATH="cron.d"
 CRON_FILE_PATH="/etc/cron.d/${SERVICE}" # Naming after the service since that's what it will manage
 
+echo "" > "${LOCAL_CRON_FILE_PATH}"
 for i in ${!CRON_TASK_SCHEDULES[@]}; do
     TASK_SCHEDULE=${CRON_TASK_SCHEDULES[$i]} # Value guaranteed to exist.
     TASK_COMMAND=${CRON_TASK_COMMANDS[$i]}
