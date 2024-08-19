@@ -50,7 +50,7 @@ while true; do
     read -p "Are you happy with the configurations in ${CONFIG_FILE}? [y/n] " yn
     case $yn in
         [Yy]* ) break;; # Continue
-        [Nn]* ) nano ${CONFIG_FILE}; return;; # Exit program and open config file in edit mode
+        [Nn]* ) nano ${CONFIG_FILE}; . constants.sh;; # Exit program and open config file in edit mode
         * ) echo "Please answer yes or no.";;
     esac
 done
