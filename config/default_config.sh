@@ -147,7 +147,7 @@ GAMEDIR="${STEAMCMD}/steamapps/common/Don't Starve Together Dedicated Server";
 STEAMCMD="/usr/games/steamcmd";
 LOGIN="anonymous";
 MODS_SETUP_FILE_PATH="${GAMEDIR}/mods/dedicated_server_mods_setup.lua";
-MODS_SETUP_FILE_BACKUP_PATH="${MODS_SETUP_FILE_PATH}.bak";;
+MODS_SETUP_FILE_BACKUP_PATH="${MODS_SETUP_FILE_PATH}.bak";
 DST_BIN="${GAMEDIR}/$(if [[ $X64 == true ]]; then echo "bin64"; else echo "bin"; fi)/dontstarve_dedicated_server_nullrenderer$(if [[ $X64 == true ]]; then echo "_x64"; fi)"
 
 # Special prefix for the screen sessions.
