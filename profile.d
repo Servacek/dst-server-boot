@@ -58,7 +58,7 @@ add_alias "slogs" "if [[ -f server_log.txt ]]; then nano server_log.txt; else na
 add_alias "screens" "sudo ls -laR /var/run/screen/" "Displays all active screen sessions on this machine. Useful for debugging."
 add_alias "ports" ' \
 for session in ${SHARD_SCREEN_SESSIONS[@]}; do \
-    screen_pid=$(sudo -u "${SESSION_OWNER}" screen -ls | grep "${session}" | awk "{print $1}" | cut -d. -f1 | sed "s/^[ \t]*//;s/[ \t]*$//"); \
+    screen_pid=$(screen -ls ${SESSION_OWNER}/ | grep "${session}" | awk "{print $1}" | cut -d. -f1 | sed "s/^[ \t]*//;s/[ \t]*$//"); \
     pid=$(_deepest="$screen_pid"; while [[ (! -z "$_deepest") && $(pgrep -P "$_deepest") ]]; do _deepest=$(pgrep -P "$_deepest"); done; echo "$_deepest"); \
     if [[ ! -z "$pid" ]]; then \
         echo "${session}:"; \
@@ -70,7 +70,7 @@ for session in ${SHARD_SCREEN_SESSIONS[@]}; do \
 done' "Displays the ports currently used by the server shard process(es)."
 add_alias "status" ' \
 for session in ${SHARD_SCREEN_SESSIONS[@]}; do \
-    screen_pid=$(sudo -u "${SESSION_OWNER}" screen -ls | grep "${session}" | awk "{print $1}" | cut -d. -f1 | sed "s/^[ \t]*//;s/[ \t]*$//"); \
+    screen_pid=$(screen -ls ${SESSION_OWNER}/ | grep "${session}" | awk "{print $1}" | cut -d. -f1 | sed "s/^[ \t]*//;s/[ \t]*$//"); \
     pid=$(_deepest="$screen_pid"; while [[ (! -z "$_deepest") && $(pgrep -P "$_deepest") ]]; do _deepest=$(pgrep -P "$_deepest"); done; echo "$_deepest"); \
     pname=$(if [[ ! -z "$pid" ]]; then echo $(ps -p "$pid" -o comm=); fi); \
     if [[ "$pname" != "$DST_SERVER_PROCESS_NAME" ]]; then \
@@ -100,7 +100,7 @@ shopt -s expand_aliases
 
 # We do not want to have a password prompt at login
 if [[ $ADD_ALIASES_TO_SUDOERS == true ]]; then
-    sudo status
+    status
 fi
 
 echo ""
