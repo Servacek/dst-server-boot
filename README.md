@@ -31,8 +31,6 @@ Linux shell script for booting up, updating and managing a Don't Starve Together
 - Custom command aliases for selected group of users for easier management of the server.
 - Ability to select specific core or core range for each of the cluster's shards.
 - Updating of the game's files on boot and file validation without overriding the `dedicated_server_mods_setup.lua` file.
-- Automatic adding of crontab jobs and sudoers rules any many more configurations were automatized!
-- Restarting on-failure per shard process.
 
 ![image](https://github.com/user-attachments/assets/06f0a6a1-ec9f-4ad1-aae0-4c50fa20843e)
 *Output of the custom `status` command alias displaying the current state of the server and it's load on the system's resources.*
@@ -48,7 +46,7 @@ For the default values please refer to [`/config/default_config.sh`](https://git
 | x64  | Whether to use the 64-bit binaries or the default 32 bit ones.  | boolean |
 | SESSION_OWNER | The user allowed to manage the server. Or the user this server should run as. | string |
 | SESSION_OWNER_GROUP | The name of the group for users allowed to manage the server. | string |
-| IGNORE_USERS | List of users that should be ignore even though they are in the desired group. | array of strings |
+| IGNORE_USERS | List of users that should be ignored even though they are in the desired group. | array of strings |
 | SERVICE | The name of the service for this server that should be created and used for managing the server's processes. | string |
 | GAMEDIR | Directory where you Don't Starve Together Dedicated Server lives. This is by default in your STEAMCMD directory. | string |
 | TIME_UNTIL_AUTO_RESTART | Seconds to wait after the server exists with a non-zero status. | integer |
