@@ -2,7 +2,6 @@
 Linux shell script for booting up, updating and managing a Don't Starve Together Dedicated Server with multiple shards on Linux CLI systems with advanced options and easy configuration, installation and updates.
 
 ![image](https://github.com/user-attachments/assets/366580b1-11da-4879-ad57-0caab8cfb3d4)
-![image](https://github.com/user-attachments/assets/366580b1-11da-4879-ad57-0caab8cfb3d4)
 
 ## General Dependencies
 - Linux
