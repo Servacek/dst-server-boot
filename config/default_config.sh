@@ -154,7 +154,6 @@ DST_BIN="${GAMEDIR}/$(if [[ $X64 == true ]]; then echo "bin64"; else echo "bin";
 
 # Special prefix for the screen sessions.
 SHARD_SESSION_PREFIX="${GAMESERVERID}_${CLUSTER}_"
-IGNORE_USERS=() # List of users that should be ignore even though they are in the desired group.
 
 DST_SERVER_PROCESS_NAME="dontstarve_dedi"
 
