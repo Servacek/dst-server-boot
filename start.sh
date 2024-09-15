@@ -55,6 +55,7 @@ else
 fi
 
 echo "Starting up the shards..."
+CURRENT_START_RETRY_ATTEMPTS=0
 for i in ${!SHARDS[@]}; do
     SHARD_NAME=${SHARDS[$i]} # Should always have an value, since names are required.
     SESSION=${SHARD_SESSION_PREFIX}${SHARDS[$i]}
@@ -86,8 +87,21 @@ for i in ${!SHARDS[@]}; do
             $(if [[ "'"${DISABLEDATACOLLECTION}"'" == true ]]; then echo "-disabledatacollection"; fi) \
             $(if [[ "'"${CLOUDSERVER}"'" == true && '"$i"' == '"$MASTER_SHARD_INDEX"' ]]; then echo "-cloudserver"; fi)
         ); do
-            echo -e "'"${RED}"'[Error] Looks like the server has crashed! Restarting in '"${TIME_UNTIL_AUTO_RESTART}"' seconds...'"${NC}"'";
-            sleep '"${TIME_UNTIL_AUTO_RESTART}"';
+            if [[ "'"${RESTART_INDIVIDUAL_SHARDS_ON_FAILURE}"'" == true ]]; then
+                if [[ "'"${CURRENT_START_RETRY_ATTEMPTS}"'" -ge "'"${MAX_START_RETRY_ATTEMPTS}"'" ]]; then
+                    echo -e "'"${RED}"'[Error] Server has crashed and we were unable to revive it even after '"${MAX_START_RETRY_ATTEMPTS}"' attempts! Exiting...'"${NC}"'";
+                    break;
+                fi
+
+                CURRENT_START_RETRY_ATTEMPTS=$((CURRENT_START_RETRY_ATTEMPTS+1));
+                echo -e "'"${RED}"'[Error] Looks like the shard \"'"${SHARD_NAME}"'\" has crashed! Restarting it in '"${TIME_UNTIL_AUTO_RESTART}"' seconds...'"${NC}"'";
+                sleep '"${TIME_UNTIL_AUTO_RESTART}"';
+            else
+                echo -e "'"${RED}"'[Error] Looks like the shard \"'"${SHARD_NAME}"'\" has crashed! Restarting the WHOLE server in '"${TIME_UNTIL_AUTO_RESTART}"' seconds...'"${NC}"'";
+                sleep '"${TIME_UNTIL_AUTO_RESTART}"';
+                sudo /bin/systemctl restart '"${SERVICE}"'.service;
+                exit 0;
+            fi
         done'
 
     if screen_exists "${SHARD_SCREEN_SESSIONS[$i]}"; then

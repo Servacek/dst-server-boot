@@ -173,6 +173,9 @@ ENSURE_DEPENDENCIES=true
 
 OVERRIDE_DEFAULT_MOTD=true
 
+MAX_START_RETRY_ATTEMPTS=3
+RESTART_INDIVIDUAL_SHARDS_ON_FAILURE=true
+
 # Add alias commands to a sudoers file so you do not have to provide
 # a password when running "sudo ${alias}" as a user of the ${SESSION_OWNER_GROUP} group
 # or the user ${SESSION_OWNER}.
