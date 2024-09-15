@@ -82,7 +82,7 @@ for session in ${SHARD_SCREEN_SESSIONS[@]}; do \
     pid=$(_deepest="$screen_pid"; while [[ (! -z "$_deepest") && $(pgrep -P "$_deepest") ]]; do _deepest=$(pgrep -P "$_deepest"); done; echo "$_deepest"); \
     pname=$(if [[ ! -z "$pid" ]]; then echo $(ps -p "$pid" -o comm=); fi); \
     if [[ "$pname" != "$DST_SERVER_PROCESS_NAME" ]]; then \
-        echo -e "${PADDING}${BOLD}$session${NC}\t${UNDERLINE}State${NC} ${RED}inactive${NC}"; \
+        echo -e "${PADDING}${BOLD}$session${NC}\n\t\t${UNDERLINE}State${NC} ${RED}inactive${NC}"; \
     else \
         cpu_affinity=$(taskset -pc "$pid" 2>/dev/null | sed -n "s/.*: \(.*\)/\1/p"); \
         cpu_usage=$(ps -p $pid -o %cpu --no-headers); \
