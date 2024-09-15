@@ -55,7 +55,6 @@ else
 fi
 
 echo "Starting up the shards..."
-CURRENT_START_RETRY_ATTEMPTS=0
 for i in ${!SHARDS[@]}; do
     SHARD_NAME=${SHARDS[$i]} # Should always have an value, since names are required.
     SESSION=${SHARD_SESSION_PREFIX}${SHARDS[$i]}
@@ -68,7 +67,9 @@ for i in ${!SHARDS[@]}; do
 
     echo "Starting shard ${SHARD_NAME}..."
     taskset -c $(if [[ -n "$CPU_CORE" ]]; then echo "$CPU_CORE"; else echo "0-$(($(nproc)-1))"; fi) \
-        screen -c "${SCREEN_CONFIG_FILE}" -m -d -U -t "${SHARD_NAME}" -S "${SESSION}" bash -c 'while ! ('"$DST_BIN"' \
+        screen -c "${SCREEN_CONFIG_FILE}" -m -d -U -t "${SHARD_NAME}" -S "${SESSION}" bash -c '
+        CURRENT_START_RETRY_ATTEMPTS=0;
+        while ! ('"$DST_BIN"' \
             $(if [[ -n "'"${PERSISTENT_STORAGE_ROOT}"'" ]]; then echo "-persistent_storage_root '"${PERSISTENT_STORAGE_ROOT}"'"; fi) \
             $(if [[ -n "'"${CONF_DIR}"'" ]]; then echo "-conf_dir '"${CONF_DIR}"'"; fi) \
             $(if [[ -n "'"${CLUSTER}"'" ]]; then echo "-cluster '"${CLUSTER}"'"; fi) \
@@ -88,7 +89,7 @@ for i in ${!SHARDS[@]}; do
             $(if [[ "'"${CLOUDSERVER}"'" == true && '"$i"' == '"$MASTER_SHARD_INDEX"' ]]; then echo "-cloudserver"; fi)
         ); do
             if [[ "'"${RESTART_INDIVIDUAL_SHARDS_ON_FAILURE}"'" == true ]]; then
-                if [[ "'"${CURRENT_START_RETRY_ATTEMPTS}"'" -ge "'"${MAX_START_RETRY_ATTEMPTS}"'" ]]; then
+                if [[ ${CURRENT_START_RETRY_ATTEMPTS} -ge "'"${MAX_START_RETRY_ATTEMPTS}"'" ]]; then
                     echo -e "'"${RED}"'[Error] Server has crashed and we were unable to revive it even after '"${MAX_START_RETRY_ATTEMPTS}"' attempts! Exiting...'"${NC}"'";
                     break;
                 fi
